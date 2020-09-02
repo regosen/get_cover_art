@@ -6,6 +6,10 @@ This script searches Apple Music for artwork that is missing from your library. 
 - MP3
 - MP4 (.m4a, .aac)
 
+## Requirements
+- Python 3
+- Python packages: mutagen 
+
 ## Usage
 ```
 python album_art.py <path_to_audio_library>
