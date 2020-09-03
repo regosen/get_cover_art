@@ -23,8 +23,18 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - Python packages: [mutagen](https://pypi.org/project/mutagen/)
 
 ## Usage
+
+### From the Command Line
 ```
 python get_cover_art.py <path_to_audio_library>
+```
+
+### From the Python Environment
+```
+from get_cover_art import LibraryScanner
+
+scanner = LibraryScanner()
+(processed, skipped, failed) = scanner.scan_folder(PATH_TO_AUDIO_LIBRARY)
 ```
 
 ## How it works
