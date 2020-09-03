@@ -72,12 +72,16 @@ class LibraryScanner(object):
         for root, dirs, files in os.walk(folder):
             for f in files:
                 path = os.path.join(root, f)
+                base, ext = os.path.splitext(f.lower())
                 try:
                     meta = None
-                    if f.lower().endswith('.mp3'):
+                    if ext == '.mp3':
                         meta = MetaMP3(path)
-                    elif f.lower().endswith('.m4a'):
+                    elif ext == '.m4a':
                         meta = MetaMP4(path)
+                    else:
+                        continue
+                    
                     if meta:
                         filename = self._slugify("%s_%s" % (meta.artist, meta.album))
                         art_path = os.path.join(os.path.dirname(path), filename + ".jpg")
