@@ -1,6 +1,6 @@
 # get_cover_art
 
-This script searches Apple Music for artwork that is missing from your library.  It saves the artwork alongside the audio and embeds the artwork into the meta tags.
+This Python package searches Apple Music for artwork that is missing from your library.  It saves the artwork alongside the audio and embeds the artwork into the meta tags.
 
 ## Supported formats
 - MP3
@@ -8,11 +8,11 @@ This script searches Apple Music for artwork that is missing from your library. 
 
 ## Requirements
 - Python 3
-- Python packages: mutagen 
+- Python packages: [mutagen](https://pypi.org/project/mutagen/)
 
 ## Usage
 ```
-python album_art.py <path_to_audio_library>
+python get_cover_art.py <path_to_audio_library>
 ```
 
 ## How it works
@@ -23,9 +23,9 @@ python album_art.py <path_to_audio_library>
 5. If artwork is found, it's embedded into the audio file.
 
 ### Why do you download from Apple Music and not Google image search?
-1. Google Image Search API requires a dev token (so does Apple Music's API but not its public web query URL)
-2. Google regular search throttles queries heavily
-3. Apple Music's cover sizes are standardized and sufficiently large
+1. Google's Image Search API requires a dev token (so does Apple Music's API, but not its public web query URL).
+2. Google search queries are heavily throttled.
+3. Apple Music's cover sizes are standardized and sufficiently large.
 
 ## Troubleshooting
 

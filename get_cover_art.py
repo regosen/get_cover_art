@@ -96,7 +96,7 @@ class LibraryScanner(object):
 def main():
     sourceBase = ""
     if len(sys.argv) != 2:
-        print('SYNTAX: album_art.py <path_to_audio_library>')
+        print('SYNTAX: get_cover_art.py <path_to_audio_library>')
         return
 
     scanner = LibraryScanner()
