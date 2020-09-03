@@ -1,10 +1,22 @@
 # get_cover_art
 
-This Python package searches Apple Music for artwork that is missing from your library.  It saves the artwork alongside the audio and embeds the artwork into the meta tags.
+### THE PROBLEM
+Missing cover art for large imported music libraries.  
 
-## Supported formats
+### EXISTING SOLUTIONS
+
+1. Apple's Music App (and its predecessor iTunes) has a "Get Album Artwork" feature, but it isn't reliable and doesn't actually embed cover art into your audio files.  That means if you move your music library elsewhere, you'll be missing all your album artwork.
+
+2. Metadata utilities like Metadatics are great (and cheap if not free), but they can require a lot of manual interaction to go through each album and select artwork from search results.  This can be forbidding for large libraries of thousands of albums.
+
+### THIS SOLUTION
+This Python package will batch-update your entire library without manual interaction for each album.
+
+It uses Apple Music's artwork, which is already standardized and high-quality.  It also embeds the artwork directly into your audio files, so that it's independent of your player.
+
+## Supported formats (so far)
 - MP3
-- MP4 (.m4a, .aac)
+- MP4 (.m4a)
 
 ## Requirements
 - Python 3

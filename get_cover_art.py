@@ -74,9 +74,9 @@ class LibraryScanner(object):
                 path = os.path.join(root, f)
                 try:
                     meta = None
-                    if f.endswith('.mp3'):
+                    if f.lower().endswith('.mp3'):
                         meta = MetaMP3(path)
-                    elif f.endswith('.m4a') or f.endswith('.aac'):
+                    elif f.lower().endswith('.m4a'):
                         meta = MetaMP4(path)
                     if meta:
                         filename = self._slugify("%s_%s" % (meta.artist, meta.album))
