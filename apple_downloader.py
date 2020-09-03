@@ -36,7 +36,7 @@ class AppleDownloader(object):
         elif artist in album:
             query = album
 
-        url = "https://music.apple.com/us/search?term=%s" % quote(query)
+        url = "https://music.apple.com/search?term=%s" % quote(query)
         source = self._urlopen_text(url)
         artist_lower = artist.lower()
         album_lower = album.lower()
