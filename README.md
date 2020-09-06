@@ -19,29 +19,46 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - MP4 (.m4a)
 
 ## Requirements
-- Python 3
+- Python 3.5 or greater
 - Python packages: [mutagen](https://pypi.org/project/mutagen/)
 
 ## Usage
 
 ### From the Command Line
 ```
-python get_cover_art.py <path_to_audio_library>
+python get_cover_art.py --path=<path_to_audio_library> [--test] [--other options]
+
+  --path PATH           folder to recursively scan for music
+  --dest DEST           destination of artwork
+  --test, --no_embed    scan and download only, don't embed artwork
+  --no_download         embed only previously-downloaded artwork
+  --inline              put artwork in same folders as music files
+  --verbose             print verbose logging
+  --skip_artists SKIP_ARTISTS
+                        file containing artists to skip
+  --skip_albums SKIP_ALBUMS
+                        file containing albums to skip
+  --skip_artwork SKIP_ARTWORK
+                        file containing destination art files to skip
 ```
+if you omit `path`, it will scan the current working directory
+
+_Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no_download` to embed only the artwork you didn't prune.
 
 ### From the Python Environment
 ```
 from get_cover_art import LibraryScanner
 
-scanner = LibraryScanner()
-(processed, skipped, failed) = scanner.scan_folder(PATH_TO_AUDIO_LIBRARY)
+scanner = LibraryScanner(options={})
+(processed, skipped, failed) = scanner.scan_folder(PATH_TO_AUDIO_LIBRARY=".")
 ```
+where `options` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
 
 ## How it works
 1. First, it scans your audio library for supported files.
 2. For each file without embedded artwork, looks for a local cover image based on the artist and album metadata.
 3. If the cover image doesn't exist locally, attempts to download from Apple Music.
-4. ignore_artwork.txt is a cache file to skip repeated attempts to download the same artwork.
+4. Maintains a cache file (i.e. `skip_artwork` option) to skip repeated attempts to download the same artwork.
 5. If artwork is found, it's embedded into the audio file.
 
 ### Why do you download from Apple Music and not Google image search?
