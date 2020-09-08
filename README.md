@@ -49,10 +49,11 @@ _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded art
 ```
 from get_cover_art import CoverFinder
 
-finder = CoverFinder(options={})
-(processed, skipped, failed) = finder.scan_folder(PATH_TO_AUDIO_LIBRARY=".")
+finder = CoverFinder(OPTIONS)
+(processed, skipped, failed) = finder.scan_folder(PATH_TO_AUDIO_LIBRARY)
 ```
-where `options` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
+where `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
+and `PATH_TO_AUDIO_LIBRARY` defaults to your current directory
 
 ## How it works
 1. First, it scans your audio library for supported files.
