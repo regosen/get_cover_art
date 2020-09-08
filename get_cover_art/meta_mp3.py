@@ -1,4 +1,4 @@
-from meta_audio import MetaAudio
+from .meta_audio import MetaAudio
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 

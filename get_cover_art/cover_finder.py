@@ -1,20 +1,16 @@
 import os, unicodedata, re
 from pathlib import Path
 
-from apple_downloader import AppleDownloader
-from meta_mp3 import MetaMP3
-from meta_mp4 import MetaMP4
+from .apple_downloader import AppleDownloader
+from .meta_mp3 import MetaMP3
+from .meta_mp4 import MetaMP4
 
-# This script searches apple music for artwork that is missing from your library
-# It saves the artwork alongside the audio and embeds the artwork into the meta tags
-
-# By default it will scan from the current working directory, you can override this
-# with commandline parameters or arguments passed into scan_folder()
-
-DEFAULT_COVER_ART_FOLDER = "_cover_art_"
-DEFAULT_SKIP_ARTISTS_FILE = "./skip_artists.txt"
-DEFAULT_SKIP_ALBUMS_FILE = "./skip_albums.txt"
-DEFAULT_SKIP_ARTWORK_FILE = "./skip_artwork.txt"
+DEFAULTS = {
+    "cover_art": "_cover_art",
+    "skip_artists": "./skip_artists.txt",
+    "skip_albums": "./skip_albums.txt",
+    "skip_artwork": "./skip_artwork.txt",
+}
 
 # utility class to cache a set of values
 class ValueStore(object):
@@ -44,11 +40,11 @@ class ValueStore(object):
         file.close()
 
 
-class LibraryScanner(object):
+class CoverFinder(object):
     def __init__(self, options={}):
-        self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULT_SKIP_ARTISTS_FILE))
-        self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULT_SKIP_ALBUMS_FILE))
-        self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULT_SKIP_ARTWORK_FILE))
+        self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULTS.get('skip_artists')))
+        self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
+        self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
 
         self.art_folder_override = ""
         self.downloader = None
@@ -93,8 +89,7 @@ class LibraryScanner(object):
             print('Skipping existing download for ' + art_path)
         
         return True
-        
-
+    
     def scan_folder(self, folder="."):
         if self.verbose: print("Scanning folder: " + folder)
         processed = 0
@@ -137,33 +132,3 @@ class LibraryScanner(object):
                     print("ERROR: failed to process %s, %s" % (path, str(e)))
                     failed += 1
         return (processed, skipped, failed)
-
-def main():
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--path', help="folder to recursively scan for music", default=".")
-    parser.add_argument('--dest', help="destination of artwork", default=DEFAULT_COVER_ART_FOLDER)
-
-    parser.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
-    parser.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
-    parser.add_argument('--inline', help="put artwork in same folders as music files", action='store_true')
-    parser.add_argument('--verbose', help="print verbose logging", action='store_true')
-
-    parser.add_argument('--skip_artists', help="file containing artists to skip", default=DEFAULT_SKIP_ARTISTS_FILE)
-    parser.add_argument('--skip_albums', help="file containing albums to skip", default=DEFAULT_SKIP_ALBUMS_FILE)
-    parser.add_argument('--skip_artwork', help="file containing destination art files to skip", default=DEFAULT_SKIP_ARTWORK_FILE)
-    args = parser.parse_args()
-
-    scanner = LibraryScanner(vars(args))
-    (processed, skipped, failed) = scanner.scan_folder(args.path)
-    print()
-    print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (processed, skipped, failed))
-    if scanner.art_folder_override:
-        print("Artwork folder: " + scanner.art_folder_override)
-    else:
-        print("Artwork files are alongside audio files.")
-    print()
-
-if __name__ == "__main__":
-    main()

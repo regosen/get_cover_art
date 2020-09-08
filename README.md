@@ -26,7 +26,7 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 
 ### From the Command Line
 ```
-python get_cover_art.py --path=<path_to_audio_library> [--test] [--other options]
+python -m get_cover_art [--path=<path_to_audio_library>] [--test] [--other options]
 
   --path PATH           folder to recursively scan for music
   --dest DEST           destination of artwork
@@ -47,10 +47,10 @@ _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded art
 
 ### From the Python Environment
 ```
-from get_cover_art import LibraryScanner
+from get_cover_art import CoverFinder
 
-scanner = LibraryScanner(options={})
-(processed, skipped, failed) = scanner.scan_folder(PATH_TO_AUDIO_LIBRARY=".")
+finder = CoverFinder(options={})
+(processed, skipped, failed) = finder.scan_folder(PATH_TO_AUDIO_LIBRARY=".")
 ```
 where `options` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
 

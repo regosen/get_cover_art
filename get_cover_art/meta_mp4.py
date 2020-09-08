@@ -1,4 +1,4 @@
-from meta_audio import MetaAudio
+from .meta_audio import MetaAudio
 from mutagen.mp4 import MP4
 from mutagen.m4a import M4ACover
 

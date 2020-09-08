@@ -126,3 +126,4 @@ dmypy.json
 *.txt
 setup.py
 MANIFEST.in
+*.jpg
