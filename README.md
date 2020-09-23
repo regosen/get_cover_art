@@ -56,11 +56,11 @@ where `OPTIONS` is a dict of the same options listed for the commandline, e.g. `
 and `PATH_TO_AUDIO_LIBRARY` defaults to your current directory
 
 ## How it works
-1. First, it scans your audio library for supported files.
-2. For each file without embedded artwork, looks for a local cover image based on the artist and album metadata.
-3. If the cover image doesn't exist locally, attempts to download from Apple Music.
-4. Maintains a cache file (i.e. `skip_artwork` option) to skip repeated attempts to download the same artwork.
-5. If artwork is found, it's embedded into the audio file.
+1. First, it recursively scans your provided library folder for supported files.
+2. For each file without embedded artwork, attempts to download from Apple Music based on artist and album metadata.
+  - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
+  - Step 2 is also skipped based on `--no_download` or `--skip_*` options.
+3. If artwork is found, it's embedded into the audio file.
 
 ### Why do you download from Apple Music and not Google image search?
 1. Google's Image Search API requires a dev token (so does Apple Music's API, but not its public web query URL).
