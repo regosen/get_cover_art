@@ -1,4 +1,4 @@
-import argparse
+import argparse, os
 from .cover_finder import CoverFinder, DEFAULTS
 
 # This script searches apple music for artwork that is missing from your library
@@ -8,12 +8,12 @@ from .cover_finder import CoverFinder, DEFAULTS
 # with commandline parameters or arguments passed into scan_folder()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--path', help="folder to recursively scan for music", default=".")
+parser.add_argument('--path', help="audio file, or folder of audio files (recursive)", default=".")
 parser.add_argument('--dest', help="destination of artwork", default=DEFAULTS.get('cover_art'))
 
 parser.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
 parser.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
-parser.add_argument('--inline', help="put artwork in same folders as music files", action='store_true')
+parser.add_argument('--inline', help="put artwork in same folders as audio files", action='store_true')
 parser.add_argument('--verbose', help="print verbose logging", action='store_true')
 
 parser.add_argument('--skip_artists', help="file containing artists to skip", default=DEFAULTS.get('skip_artists'))
@@ -22,9 +22,12 @@ parser.add_argument('--skip_artwork', help="file containing destination art file
 args = parser.parse_args()
 
 finder = CoverFinder(vars(args))
-(processed, skipped, failed) = finder.scan_folder(args.path)
+if os.path.isfile(args.path):
+    finder.scan_file(args.path)
+else:
+    finder.scan_folder(args.path)
 print()
-print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (processed, skipped, failed))
+print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (finder.files_processed, finder.files_skipped, finder.files_failed))
 if finder.art_folder_override:
     print("Artwork folder: " + finder.art_folder_override)
 else:

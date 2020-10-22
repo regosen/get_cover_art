@@ -28,11 +28,11 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 ```
 python -m get_cover_art [--path=<path_to_audio_library>] [--test] [--other options]
 
-  --path PATH           folder to recursively scan for music
+  --path PATH           audio file, or folder of audio files (recursive)
   --dest DEST           destination of artwork
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
-  --inline              put artwork in same folders as music files
+  --inline              put artwork in same folders as audio files
   --verbose             print verbose logging
   --skip_artists SKIP_ARTISTS
                         file containing artists to skip
@@ -50,10 +50,15 @@ _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded art
 from get_cover_art import CoverFinder
 
 finder = CoverFinder(OPTIONS)
-(processed, skipped, failed) = finder.scan_folder(PATH_TO_AUDIO_LIBRARY)
+
+# then you can run either of these:
+finder.scan_folder(PATH_TO_AUDIO_LIBRARY)
+finder.scan_file(PATH_TO_AUDIO_FILE)
 ```
-where `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
-and `PATH_TO_AUDIO_LIBRARY` defaults to your current directory
+
+- `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
+- you can omit `PATH_TO_AUDIO_LIBRARY` to default to your current directory
+- your `CoverFinder` object keeps a tally of files_processed, files_skipped, files_failed, files_invalid
 
 ## How it works
 1. First, it recursively scans your provided library folder for supported files.

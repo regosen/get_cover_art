@@ -46,6 +46,11 @@ class CoverFinder(object):
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
 
+        self.files_processed = 0 # artwork was downloaded / embedded
+        self.files_skipped = 0   # no artwork was available / embeddable
+        self.files_invalid = 0   # not a unsupported audio file
+        self.files_failed = 0    # exception encountered
+
         self.art_folder_override = ""
         self.downloader = None
         if not options.get('no_download'):
@@ -90,45 +95,46 @@ class CoverFinder(object):
         
         return True
     
+    def scan_file(self, path):
+        folder, filename = os.path.split(path)
+        base, ext = os.path.splitext(filename.lower())
+        art_folder = self.art_folder_override or folder
+        try:
+            meta = None
+            if ext == '.mp3':
+                meta = MetaMP3(path)
+            elif ext == '.m4a':
+                meta = MetaMP4(path)
+            else:
+                self.files_invalid += 1
+                return
+            
+            if meta:
+                filename = self._slugify("%s - %s" % (meta.artist, meta.album))
+                art_path = os.path.join(art_folder, filename + ".jpg")
+                if self._should_skip(meta, art_path, self.verbose):
+                    self.files_skipped += 1
+                    return
+
+                success = True
+                if self.downloader:
+                    success = success and self._download(meta, art_path)
+                if self.embed:
+                    success = success and meta.embed(art_path)
+                
+                if success:
+                    self.files_processed += 1
+                else:
+                    self.ignore_artwork.add(art_path)
+                    self.files_skipped += 1
+
+        except Exception as e:
+            print("ERROR: failed to process %s, %s" % (path, str(e)))
+            self.files_failed += 1
+            
     def scan_folder(self, folder="."):
         if self.verbose: print("Scanning folder: " + folder)
-        processed = 0
-        skipped = 0
-        failed = 0
         for root, dirs, files in os.walk(folder):
             for f in files:
                 path = os.path.join(root, f)
-                base, ext = os.path.splitext(f.lower())
-                art_folder = self.art_folder_override or os.path.dirname(path)
-                try:
-                    meta = None
-                    if ext == '.mp3':
-                        meta = MetaMP3(path)
-                    elif ext == '.m4a':
-                        meta = MetaMP4(path)
-                    else:
-                        continue
-                    
-                    if meta:
-                        filename = self._slugify("%s - %s" % (meta.artist, meta.album))
-                        art_path = os.path.join(art_folder, filename + ".jpg")
-                        if self._should_skip(meta, art_path, self.verbose):
-                            skipped += 1
-                            continue
-
-                        success = True
-                        if self.downloader:
-                            success = success and self._download(meta, art_path)
-                        if self.embed:
-                            success = success and meta.embed(art_path)
-                        
-                        if success:
-                            processed += 1
-                        else:
-                            self.ignore_artwork.add(art_path)
-                            skipped += 1
-
-                except Exception as e:
-                    print("ERROR: failed to process %s, %s" % (path, str(e)))
-                    failed += 1
-        return (processed, skipped, failed)
+                self.scan_file(path)
