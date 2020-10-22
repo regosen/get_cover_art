@@ -62,6 +62,7 @@ finder.scan_file(PATH_TO_AUDIO_FILE)
 
 ## How it works
 1. First, it recursively scans your provided library folder for supported files.
+  - Step 1 is skipped if you specified a single file instead of a folder.
 2. For each file without embedded artwork, attempts to download from Apple Music based on artist and album metadata.
   - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
   - Step 2 is also skipped based on `--no_download` or `--skip_*` options.
