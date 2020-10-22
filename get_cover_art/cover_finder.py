@@ -46,10 +46,10 @@ class CoverFinder(object):
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
 
-        self.files_processed = 0 # artwork was downloaded / embedded
-        self.files_skipped = 0   # no artwork was available / embeddable
-        self.files_invalid = 0   # not a unsupported audio file
-        self.files_failed = 0    # exception encountered
+        self.files_processed = [] # artwork was downloaded / embedded
+        self.files_skipped = []   # no artwork was available / embeddable
+        self.files_invalid = []   # not a unsupported audio file
+        self.files_failed = []    # exception encountered
 
         self.art_folder_override = ""
         self.downloader = None
@@ -106,14 +106,14 @@ class CoverFinder(object):
             elif ext == '.m4a':
                 meta = MetaMP4(path)
             else:
-                self.files_invalid += 1
+                self.files_invalid.append(path)
                 return
             
             if meta:
                 filename = self._slugify("%s - %s" % (meta.artist, meta.album))
                 art_path = os.path.join(art_folder, filename + ".jpg")
                 if self._should_skip(meta, art_path, self.verbose):
-                    self.files_skipped += 1
+                    self.files_skipped.append(path)
                     return
 
                 success = True
@@ -123,14 +123,14 @@ class CoverFinder(object):
                     success = success and meta.embed(art_path)
                 
                 if success:
-                    self.files_processed += 1
+                    self.files_processed.append(path)
                 else:
                     self.ignore_artwork.add(art_path)
-                    self.files_skipped += 1
+                    self.files_skipped.append(path)
 
         except Exception as e:
             print("ERROR: failed to process %s, %s" % (path, str(e)))
-            self.files_failed += 1
+            self.files_failed.append(path)
             
     def scan_folder(self, folder="."):
         if self.verbose: print("Scanning folder: " + folder)

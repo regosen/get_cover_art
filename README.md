@@ -58,7 +58,7 @@ finder.scan_file(PATH_TO_AUDIO_FILE)
 
 - `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
 - you can omit `PATH_TO_AUDIO_LIBRARY` to default to your current directory
-- your `CoverFinder` object keeps a tally of files_processed, files_skipped, files_failed, files_invalid
+- your `CoverFinder` object keeps a list of files_processed, files_skipped, files_failed, files_invalid
 
 ## How it works
 1. First, it recursively scans your provided folder for supported files.

@@ -27,7 +27,10 @@ if os.path.isfile(args.path):
 else:
     finder.scan_folder(args.path)
 print()
-print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (finder.files_processed, finder.files_skipped, finder.files_failed))
+num_processed = len(finder.files_processed)
+num_skipped = len(finder.files_skipped)
+num_failed = len(finder.files_failed)
+print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (num_processed, num_skipped, num_failed))
 if finder.art_folder_override:
     print("Artwork folder: " + finder.art_folder_override)
 else:
