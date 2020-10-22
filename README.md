@@ -26,7 +26,7 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 
 ### From the Command Line
 ```
-python -m get_cover_art [--path=<path_to_audio_library>] [--test] [--other options]
+python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--other options]
 
   --path PATH           audio file, or folder of audio files (recursive)
   --dest DEST           destination of artwork
@@ -61,7 +61,7 @@ finder.scan_file(PATH_TO_AUDIO_FILE)
 - your `CoverFinder` object keeps a tally of files_processed, files_skipped, files_failed, files_invalid
 
 ## How it works
-1. First, it recursively scans your provided library folder for supported files.
+1. First, it recursively scans your provided folder for supported files.
   - Step 1 is skipped if you specified a single file instead of a folder.
 2. For each file without embedded artwork, attempts to download from Apple Music based on artist and album metadata.
   - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
