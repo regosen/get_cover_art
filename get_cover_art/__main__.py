@@ -14,6 +14,7 @@ parser.add_argument('--dest', help="destination of artwork", default=DEFAULTS.ge
 parser.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
 parser.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
 parser.add_argument('--inline', help="put artwork in same folders as audio files", action='store_true')
+parser.add_argument('--force', help="overwrite existing artwork", action='store_true')
 parser.add_argument('--verbose', help="print verbose logging", action='store_true')
 
 parser.add_argument('--skip_artists', help="file containing artists to skip", default=DEFAULTS.get('skip_artists'))

@@ -14,14 +14,13 @@ class MetaMP3(MetaAudio):
             raise Exception("missing ID3 tags")
 
     def has_embedded_art(self):
-        try:
-            # some of these could have 'APIC:Cover' or something else
-            # so we just look for APIC:<anything>
-            return 'APIC:' in "".join(self.audio.tags.keys())
-        except error:
-            return False
+        if self.audio.tags.getall("APIC"):
+            return True
+        return False
 
     def embed_art(self, art_path):
+        self.audio.tags.delall("APIC") # Delete existing art
+
         # from https://stackoverflow.com/questions/409949/how-do-you-embed-album-art-into-an-mp3-using-python
         self.audio.tags.add(
             APIC(

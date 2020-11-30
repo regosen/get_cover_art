@@ -26,6 +26,9 @@ class ValueStore(object):
         else:
             self.keys = set([])
 
+    def clear(self):
+        self.keys = set([])
+
     def has(self, key):
         return key in self.keys
     
@@ -58,9 +61,14 @@ class CoverFinder(object):
         if not options.get('inline'):
             self.art_folder_override = options.get('dest')
             if self.art_folder_override:
+                self.art_folder_override = os.path.abspath(self.art_folder_override)
                 Path(self.art_folder_override).mkdir(parents=True, exist_ok=True)
+
         self.embed = not (options.get('no_embed') or options.get('test'))
         self.verbose = options.get('verbose')
+        self.force = options.get('force')
+        if self.force:
+            self.ignore_artwork.clear()
 
     def _should_skip(self, meta, art_path, verbose):
         if self.ignore_artists.has(meta.artist):
@@ -69,7 +77,7 @@ class CoverFinder(object):
         if self.ignore_albums.has(meta.album):
             if verbose: print("Skipping ignored album (%s) for %s" % (meta.album, art_path))
             return True
-        if meta.has_embedded_art():
+        if not self.force and meta.has_embedded_art():
             if verbose: print("Skipping existing embedded artwork for %s" % (art_path))
             return True
         if self.ignore_artwork.has(art_path):
