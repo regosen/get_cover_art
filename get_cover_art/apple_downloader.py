@@ -3,6 +3,10 @@ import re
 from urllib.request import Request, urlopen
 from urllib.parse import quote
 
+def normalize_album_name(album):
+    # HACK: strip "disc 1", etc. from album name
+    return album.lower().split("(disc ")[0].split("[disc ")[0].strip()
+
 class AppleDownloader(object):
     def __init__(self):
        return
@@ -28,41 +32,33 @@ class AppleDownloader(object):
         print("Downloaded cover art: "  + dest_path)
 
     def dload_apple_art(self, meta, art_path):
-        artist = meta.artist
-        album = meta.album
-        query = "%s %s" % (artist, album)
-        if album in artist:
-            query = artist
-        elif artist in album:
-            query = album
+        artist_lower = meta.artist.lower()
+        album_lower = normalize_album_name(meta.album)
+        query = "%s %s" % (artist_lower, album_lower)
+        if album_lower in artist_lower:
+            query = artist_lower
+        elif artist_lower in album_lower:
+            query = album_lower
 
-        url = "https://music.apple.com/search?term=%s" % quote(query)
-        source = self._urlopen_text(url)
-        artist_lower = artist.lower()
-        album_lower = album.lower()
-
-        matcher = re.compile(r'<script type="fastboot/shoebox" id="shoebox-media-api-cache-amp-music">(.+?)</script', re.I)
-        json = matcher.findall(source)
-        if json:
+        url = "https://itunes.apple.com/search?term=%s&media=music&entity=album" % quote(query)
+        print(url)
+        json_text = self._urlopen_text(url)
+        if json_text:
             try:
-                info = eval(json[0])
-                keys = filter(lambda x: x != '\uf8ff.storefronts.us', list(info.keys()))
-                key = next(keys)
-                data = eval(info[key].replace('false','False').replace('true','True'))
-                albums = data['d']['results']['album']['data']
+                info = eval(json_text)
+                
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
-                for album_info in reversed(albums):
-                    attr = album_info['attributes']
-                    album = attr['name'].lower()
-                    artist = attr['artistName'].lower()
+                for album_info in reversed(info['results']):
+                    album = album_info['collectionName'].lower()
+                    artist = album_info['artistName'].lower()
                     
                     if artist_lower != artist.lower():
                         continue
                     if not album_lower in album.lower():
                         continue
                     
-                    art = attr['artwork']['url'].replace('{w}','500').replace('{h}','500')
+                    art = album_info['artworkUrl100'].replace('100x100bb','500x500bb')
                     if album_lower == album.lower():
                         break # exact match found
                 if art:
