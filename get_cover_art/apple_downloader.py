@@ -41,7 +41,6 @@ class AppleDownloader(object):
             query = album_lower
 
         url = "https://itunes.apple.com/search?term=%s&media=music&entity=album" % quote(query)
-        print(url)
         json_text = self._urlopen_text(url)
         if json_text:
             try:
