@@ -33,6 +33,7 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--othe
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
   --inline              put artwork in same folders as audio files
+  --force               overwrite existing artwork
   --verbose             print verbose logging
   --skip_artists SKIP_ARTISTS
                         file containing artists to skip
@@ -63,7 +64,7 @@ finder.scan_file(PATH_TO_AUDIO_FILE)
 ## How it works
 1. First, it recursively scans your provided folder for supported files.
   - Step 1 is skipped if you specified a single file instead of a folder.
-2. For each file without embedded artwork, attempts to download from Apple Music based on artist and album metadata.
+2. For each file without embedded artwork (or all files if `--force` is used), attempts to download from Apple Music based on artist and album metadata.
   - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
   - Step 2 is also skipped based on `--no_download` or `--skip_*` options.
 3. If artwork is found, it's embedded into the audio file.
