@@ -32,7 +32,9 @@ class AppleDownloader(object):
         print("Downloaded cover art: "  + dest_path)
 
     def dload_apple_art(self, meta, art_path):
-        artist_lower = meta.artist.lower()
+        artist_lower = meta.artist.lower().strip()
+        if artist_lower.endswith(', the'):
+            artist_lower = "the " + artist_lower.replace(', the', '')
         album_lower = normalize_album_name(meta.album)
         query = "%s %s" % (artist_lower, album_lower)
         if album_lower in artist_lower:
@@ -52,7 +54,7 @@ class AppleDownloader(object):
                     album = album_info['collectionName'].lower()
                     artist = album_info['artistName'].lower()
                     
-                    if artist_lower != artist.lower():
+                    if not artist_lower in artist.lower():
                         continue
                     if not album_lower in album.lower():
                         continue
