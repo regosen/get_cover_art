@@ -3,6 +3,13 @@ import re
 from urllib.request import Request, urlopen
 from urllib.parse import quote
 
+def normalize_artist_name(artist):
+    # account for "The X" vs "X, The"
+    artist_lower = artist.lower().strip()
+    if artist_lower.endswith(', the'):
+        artist_lower = "the " + artist_lower.replace(', the', '')
+    return artist_lower
+
 def normalize_album_name(album):
     # HACK: strip "disc 1", etc. from album name
     return album.lower().split("(disc ")[0].split("[disc ")[0].strip()
@@ -32,9 +39,7 @@ class AppleDownloader(object):
         print("Downloaded cover art: "  + dest_path)
 
     def dload_apple_art(self, meta, art_path):
-        artist_lower = meta.artist.lower().strip()
-        if artist_lower.endswith(', the'):
-            artist_lower = "the " + artist_lower.replace(', the', '')
+        artist_lower = normalize_artist_name(meta.artist)
         album_lower = normalize_album_name(meta.album)
         query = "%s %s" % (artist_lower, album_lower)
         if album_lower in artist_lower:
