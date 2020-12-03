@@ -2,9 +2,9 @@ from .meta_audio import MetaAudio
 from mutagen.flac import Picture, FLAC
 
 class MetaFLAC(MetaAudio):
-    def __init__(self, mp4_path):
-        self.audio_path = mp4_path
-        self.audio = FLAC(mp4_path)
+    def __init__(self, path):
+        self.audio_path = path
+        self.audio = FLAC(path)
         try:
             self.artist = self.audio['artist'][0]
             self.album = self.audio['album'][0]

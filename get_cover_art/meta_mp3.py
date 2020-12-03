@@ -3,9 +3,9 @@ from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 
 class MetaMP3(MetaAudio):
-    def __init__(self, mp3_path):
-        self.audio_path = mp3_path
-        self.audio = MP3(mp3_path, ID3=ID3)
+    def __init__(self, path):
+        self.audio_path = path
+        self.audio = MP3(path, ID3=ID3)
         try:
             self.artist = self.audio.tags['TPE1'].text[0]
             self.album = self.audio.tags['TALB'].text[0]

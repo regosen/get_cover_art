@@ -3,9 +3,9 @@ from mutagen.mp4 import MP4
 from mutagen.m4a import M4ACover
 
 class MetaMP4(MetaAudio):
-    def __init__(self, mp4_path):
-        self.audio_path = mp4_path
-        self.audio = MP4(mp4_path)
+    def __init__(self, path):
+        self.audio_path = path
+        self.audio = MP4(path)
         try:
             self.artist = self.audio.tags['©ART'][0]
             self.album = self.audio.tags['©alb'][0]
