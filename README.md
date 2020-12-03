@@ -17,6 +17,7 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 ## Supported formats (so far)
 - MP3
 - MP4 (.m4a)
+- FLAC
 
 ## Requirements
 - Python 3.5 or greater

@@ -4,6 +4,7 @@ from pathlib import Path
 from .apple_downloader import AppleDownloader
 from .meta_mp3 import MetaMP3
 from .meta_mp4 import MetaMP4
+from .meta_flac import MetaFLAC
 
 DEFAULTS = {
     "cover_art": "_cover_art",
@@ -113,6 +114,8 @@ class CoverFinder(object):
                 meta = MetaMP3(path)
             elif ext == '.m4a':
                 meta = MetaMP4(path)
+            elif ext == '.flac':
+                meta = MetaFLAC(path)
             else:
                 self.files_invalid.append(path)
                 return
