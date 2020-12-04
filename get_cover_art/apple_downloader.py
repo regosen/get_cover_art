@@ -7,7 +7,7 @@ def normalize_artist_name(artist):
     # account for "The X" vs "X, The"
     artist_lower = artist.lower().strip()
     if artist_lower.endswith(', the'):
-        artist_lower = "the " + artist_lower.replace(', the', '')
+        artist_lower = "the " + artist_lower[:-5]
     return artist_lower
 
 def normalize_album_name(album):
