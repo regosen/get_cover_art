@@ -27,8 +27,12 @@ class AppleDownloader(object):
     def _urlopen_text(self, url):
         try:
             return self._urlopen_safe(url).decode("utf8")
-        except:
-            print("ERROR: reading URL: %s" % url)
+        except Exception as error:
+            if ("certificate verify failed" in str(error)):
+                print("ERROR: Python doesn't have SSL certificates installed, can't access " + url)
+                print("Please run 'Install Certificates.command' from your Python installation directory.")
+            else:
+                print("ERROR: reading URL (%s): %s" % (url, str(error)))
             return ""
 
     def _dload(self, image_url, dest_path):

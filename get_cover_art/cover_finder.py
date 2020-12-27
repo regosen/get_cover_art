@@ -68,17 +68,17 @@ class CoverFinder(object):
         self.embed = not (options.get('no_embed') or options.get('test'))
         self.verbose = options.get('verbose')
         self.force = options.get('force')
-        if self.force:
-            self.ignore_artwork.clear()
 
     def _should_skip(self, meta, art_path, verbose):
+        if self.force:
+            return False
         if self.ignore_artists.has(meta.artist):
             if verbose: print("Skipping ignored artist (%s) for %s" % (meta.artist, art_path))
             return True
         if self.ignore_albums.has(meta.album):
             if verbose: print("Skipping ignored album (%s) for %s" % (meta.album, art_path))
             return True
-        if not self.force and meta.has_embedded_art():
+        if meta.has_embedded_art():
             if verbose: print("Skipping existing embedded artwork for %s" % (art_path))
             return True
         if self.ignore_artwork.has(art_path):
