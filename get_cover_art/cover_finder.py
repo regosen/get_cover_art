@@ -56,9 +56,10 @@ class CoverFinder(object):
         self.files_failed = []    # exception encountered
 
         self.art_folder_override = ""
+        self.verbose = options.get('verbose')
         self.downloader = None
         if not options.get('no_download'):
-            self.downloader = AppleDownloader()
+            self.downloader = AppleDownloader(self.verbose)
         if not options.get('inline'):
             self.art_folder_override = options.get('dest')
             if self.art_folder_override:
@@ -66,7 +67,6 @@ class CoverFinder(object):
                 Path(self.art_folder_override).mkdir(parents=True, exist_ok=True)
 
         self.embed = not (options.get('no_embed') or options.get('test'))
-        self.verbose = options.get('verbose')
         self.force = options.get('force')
 
     def _should_skip(self, meta, art_path, verbose):
@@ -97,7 +97,7 @@ class CoverFinder(object):
         return value
     
     def _download(self, meta, art_path):
-        if not os.path.exists(art_path):
+        if self.force or not os.path.exists(art_path):
             return self.downloader.dload_apple_art(meta, art_path)
         elif self.verbose:
             print('Skipping existing download for ' + art_path)

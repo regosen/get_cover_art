@@ -18,8 +18,8 @@ def normalize_album_name(album):
     return album.lower().split("(disc ")[0].split("[disc ")[0].translate( NORMALIZATION_TABLE ).strip()
 
 class AppleDownloader(object):
-    def __init__(self):
-       return
+    def __init__(self, verbose):
+        self.verbose = verbose
         
     def _urlopen_safe(self, url):
         q = Request(url)
@@ -77,6 +77,9 @@ class AppleDownloader(object):
                 if art:
                     self._dload(art, art_path)
                     return True
+                elif self.verbose:
+                    print("Failed to find matching artist (%s) and album (%s)" % (artist_lower, album_lower))
+                    return False
             except Exception as error:
                 print("ERROR encountered downloading for %s" % query)
                 print(error)
