@@ -3,16 +3,19 @@ import re
 from urllib.request import Request, urlopen
 from urllib.parse import quote
 
+# from https://stackoverflow.com/questions/10294032/python-replace-typographical-quotes-dashes-etc-with-their-ascii-counterparts
+NORMALIZATION_TABLE = dict( [ (ord(x), ord(y)) for x,y in zip( u"‘’´“”–-",  u"'''\"\"--") ] ) 
+
 def normalize_artist_name(artist):
     # account for "The X" vs "X, The"
     artist_lower = artist.lower().strip()
     if artist_lower.endswith(', the'):
         artist_lower = "the " + artist_lower[:-5]
-    return artist_lower
+    return artist_lower.translate( NORMALIZATION_TABLE )
 
 def normalize_album_name(album):
     # HACK: strip "disc 1", etc. from album name
-    return album.lower().split("(disc ")[0].split("[disc ")[0].strip()
+    return album.lower().split("(disc ")[0].split("[disc ")[0].translate( NORMALIZATION_TABLE ).strip()
 
 class AppleDownloader(object):
     def __init__(self):
@@ -60,8 +63,8 @@ class AppleDownloader(object):
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
                 for album_info in reversed(info['results']):
-                    album = album_info['collectionName'].lower()
-                    artist = album_info['artistName'].lower()
+                    album = normalize_artist_name(album_info['collectionName'])
+                    artist = normalize_album_name(album_info['artistName'])
                     
                     if not artist_lower in artist.lower():
                         continue
