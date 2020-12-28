@@ -7,7 +7,11 @@ class MetaMP3(MetaAudio):
         self.audio_path = path
         self.audio = MP3(path, ID3=ID3)
         try:
-            self.artist = self.audio.tags['TPE1'].text[0]
+            if 'TPE2' in self.audio.tags:
+                # use Album Artist first
+                self.artist = self.audio.tags['TPE2'].text[0]
+            else:
+                self.artist = self.audio.tags['TPE1'].text[0]
             self.album = self.audio.tags['TALB'].text[0]
             self.title = self.audio.tags['TIT2'].text[0]
         except:

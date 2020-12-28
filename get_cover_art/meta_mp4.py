@@ -7,7 +7,11 @@ class MetaMP4(MetaAudio):
         self.audio_path = path
         self.audio = MP4(path)
         try:
-            self.artist = self.audio.tags['©ART'][0]
+            if 'aART' in self.audio.tags:
+                # use Album Artist first
+                self.artist = self.audio.tags['aART'][0]
+            else:
+                self.artist = self.audio.tags['©ART'][0]
             self.album = self.audio.tags['©alb'][0]
             self.title = self.audio.tags['©nam'][0]
         except:

@@ -6,7 +6,11 @@ class MetaFLAC(MetaAudio):
         self.audio_path = path
         self.audio = FLAC(path)
         try:
-            self.artist = self.audio['artist'][0]
+            if 'albumartist' in self.audio:
+                # use Album Artist first
+                self.artist = self.audio['albumartist'][0]
+            else:
+                self.artist = self.audio['artist'][0]
             self.album = self.audio['album'][0]
             self.title = self.audio['title'][0]
         except:
