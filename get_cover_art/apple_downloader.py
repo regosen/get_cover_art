@@ -6,18 +6,21 @@ from urllib.parse import quote
 # from https://stackoverflow.com/questions/10294032/python-replace-typographical-quotes-dashes-etc-with-their-ascii-counterparts
 NORMALIZATION_TABLE = dict( [ (ord(x), ord(y)) for x,y in zip( u"‘’´“”–-[{}]",  u"'''\"\"--(())") ] ) 
 
+def normalize_field(field):
+    return field.lower().strip().translate(NORMALIZATION_TABLE)
+
 def normalize_artist_name(artist):
-    artist_lower = artist.lower().strip().translate( NORMALIZATION_TABLE )
-    if artist_lower.endswith(', the'):
+    artist_norm = normalize_field(artist)
+    if artist_norm.endswith(', the'):
         # account for "The X" vs "X, The"
-        artist_lower = "the " + artist_lower[:-5]
-    return artist_lower
+        artist_norm = "the " + artist_norm[:-5]
+    return artist_norm
 
 def normalize_album_name(album):
-    album_lower = album.lower().strip().translate( NORMALIZATION_TABLE )
+    album_norm = normalize_field(album)
     # strip "(disc 1)", etc. from album name
-    album_lower = re.sub(r" \(disc \d+\)", "", album_lower)
-    return album_lower
+    album_norm = re.sub(r" \(disc \d+\)", "", album_norm)
+    return album_norm
 
 class AppleDownloader(object):
     def __init__(self, verbose):
