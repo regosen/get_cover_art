@@ -4,18 +4,20 @@ from urllib.request import Request, urlopen
 from urllib.parse import quote
 
 # from https://stackoverflow.com/questions/10294032/python-replace-typographical-quotes-dashes-etc-with-their-ascii-counterparts
-NORMALIZATION_TABLE = dict( [ (ord(x), ord(y)) for x,y in zip( u"‘’´“”–-",  u"'''\"\"--") ] ) 
+NORMALIZATION_TABLE = dict( [ (ord(x), ord(y)) for x,y in zip( u"‘’´“”–-[{}]",  u"'''\"\"--(())") ] ) 
 
 def normalize_artist_name(artist):
-    # account for "The X" vs "X, The"
-    artist_lower = artist.lower().strip()
+    artist_lower = artist.lower().strip().translate( NORMALIZATION_TABLE )
     if artist_lower.endswith(', the'):
+        # account for "The X" vs "X, The"
         artist_lower = "the " + artist_lower[:-5]
-    return artist_lower.translate( NORMALIZATION_TABLE )
+    return artist_lower
 
 def normalize_album_name(album):
-    # HACK: strip "disc 1", etc. from album name
-    return album.lower().split("(disc ")[0].split("[disc ")[0].translate( NORMALIZATION_TABLE ).strip()
+    album_lower = album.lower().strip().translate( NORMALIZATION_TABLE )
+    # strip "(disc 1)", etc. from album name
+    album_lower = re.sub(r" \(disc \d+\)", "", album_lower)
+    return album_lower
 
 class AppleDownloader(object):
     def __init__(self, verbose):
@@ -63,8 +65,8 @@ class AppleDownloader(object):
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
                 for album_info in reversed(info['results']):
-                    album = normalize_artist_name(album_info['collectionName'])
-                    artist = normalize_album_name(album_info['artistName'])
+                    artist = normalize_artist_name(album_info['artistName'])
+                    album = normalize_album_name(album_info['collectionName'])
                     
                     if not artist_lower in artist.lower():
                         continue
