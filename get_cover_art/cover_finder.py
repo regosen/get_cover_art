@@ -59,7 +59,7 @@ class CoverFinder(object):
         self.verbose = options.get('verbose')
         self.downloader = None
         if not options.get('no_download'):
-            self.downloader = AppleDownloader(self.verbose, float(options.get('throttle')))
+            self.downloader = AppleDownloader(self.verbose, float(options.get('throttle') or 0))
         if not options.get('inline'):
             self.art_folder_override = options.get('dest')
             if self.art_folder_override:
