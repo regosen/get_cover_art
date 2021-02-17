@@ -36,6 +36,7 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--othe
   --inline              put artwork in same folders as audio files
   --force               overwrite existing artwork
   --verbose             print verbose logging
+  --throttle            wait X seconds between downloads
   --skip_artists SKIP_ARTISTS
                         file containing artists to skip
   --skip_albums SKIP_ALBUMS

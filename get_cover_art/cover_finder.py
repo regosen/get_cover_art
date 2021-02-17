@@ -59,7 +59,7 @@ class CoverFinder(object):
         self.verbose = options.get('verbose')
         self.downloader = None
         if not options.get('no_download'):
-            self.downloader = AppleDownloader(self.verbose)
+            self.downloader = AppleDownloader(self.verbose, float(options.get('throttle')))
         if not options.get('inline'):
             self.art_folder_override = options.get('dest')
             if self.art_folder_override:
@@ -98,7 +98,7 @@ class CoverFinder(object):
     
     def _download(self, meta, art_path):
         if self.force or not os.path.exists(art_path):
-            return self.downloader.dload_apple_art(meta, art_path)
+            return self.downloader.download(meta, art_path)
         elif self.verbose:
             print('Skipping existing download for ' + art_path)
         

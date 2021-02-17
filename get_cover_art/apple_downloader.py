@@ -1,4 +1,4 @@
-import re
+import re, time
 
 from urllib.request import Request, urlopen
 from urllib.parse import quote
@@ -23,8 +23,9 @@ def normalize_album_name(album):
     return album_norm
 
 class AppleDownloader(object):
-    def __init__(self, verbose):
+    def __init__(self, verbose, throttle):
         self.verbose = verbose
+        self.throttle = throttle
         
     def _urlopen_safe(self, url):
         q = Request(url)
@@ -50,7 +51,9 @@ class AppleDownloader(object):
         output.close()
         print("Downloaded cover art: "  + dest_path)
 
-    def dload_apple_art(self, meta, art_path):
+    def download(self, meta, art_path):
+        if self.throttle:
+            time.sleep(self.throttle)
         artist_lower = normalize_artist_name(meta.artist)
         album_lower = normalize_album_name(meta.album)
         query = "%s %s" % (artist_lower, album_lower)
