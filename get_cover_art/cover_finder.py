@@ -5,6 +5,8 @@ from .apple_downloader import AppleDownloader
 from .meta_mp3 import MetaMP3
 from .meta_mp4 import MetaMP4
 from .meta_flac import MetaFLAC
+from .meta_opus import MetaOpus
+from .meta_vorbis import MetaVorbis
 
 DEFAULTS = {
     "cover_art": "_cover_art",
@@ -116,6 +118,10 @@ class CoverFinder(object):
                 meta = MetaMP4(path)
             elif ext == '.flac':
                 meta = MetaFLAC(path)
+            elif ext == '.opus':
+                meta = MetaOpus(path)
+            elif ext == '.ogg':
+                meta = MetaVorbis(path)
             else:
                 self.files_invalid.append(path)
                 return
