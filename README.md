@@ -45,6 +45,16 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--othe
 
   --path PATH           audio file, or folder of audio files (recursive)
   --dest DEST           destination of artwork
+  --use-folder-art {before,after,none}
+                        Use image from local folder; "before" prevents
+                        downloads, "after" uses as a fallback.
+  --folder-art-name FOLDER_ART_NAME [FOLDER_ART_NAME ...]
+                        Filename(s) of folder art to use. Accepts {artist},
+                        {album}, and {title} for replacement: e.g. cover.jpg
+                        or {album}-{artist}.jpg
+  --output-filename OUTPUT_FILENAME
+                        Name to store downloaded art in, Accepts {artist},
+                        {album}, and {title}. Default '{artist} - {album}.jpg'
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
   --inline              put artwork in same folders as audio files
@@ -61,6 +71,36 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--othe
 if you omit `path`, it will scan the current working directory
 
 _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no_download` to embed only the artwork you didn't prune.
+
+The folder-art options allow you do default to embedding local folder art.
+Some other scraping systems may have created cover art: for instance, some
+Kodi scrapers create a "cover.jpg" image in each album directory.
+
+Specifying "--use-folder-art before" will use these existing images, and only
+download images if there is no existing image. Specifying "--use-folder-art
+after" will attempt to download artwork as usual, only falling back on the
+existing images if the download is unable to locate new art.
+
+The "--folder-art-name" option allows you to specify the filename(s) to use
+for this existing folder art. It defaults to "cover.jpg \_albumcover.jpg folder.jpg", which are 3 filenames commonly used by other scraping programs. You
+can also use bracket formatting with the artist, album, and title fields:
+for instance, --folder-art-name "{artist}-{album}-cover.jpg" would create
+filenames such as "The Beatles-Abbey Road-cover.jpg".
+
+The "--output-filename" option allows you to specify the filename used to
+store downloaded files, for interoperability with other systems. You __must__
+be careful to avoid collisions between different albums: The default is
+"{artist} - {album}.jpg". If you know that all of the albums you're running
+against have their own directories _and_ you are using "--inline", then you
+could use something more generic (such as "cover.jpg").
+
+_Pro Tip:_ If you have a cover.jpg in each album directory, you can use:
+"--use-folder-art before --folder-art-name cover.jpg --inline"
+and the local images will be used when present (avoiding network lookups).
+You could also specify "--output-filename cover.jpg" if you want to store the
+newly downloaded covers in a similar location (again, this is only sane
+in combination with --inline, in cases where each album is stored in 
+a separate directory).
 
 ### From the Python Environment
 ```
