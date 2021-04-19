@@ -1,7 +1,7 @@
 from .meta_audio import MetaAudio
 # It might look odd to be importing from FLAC in the opus
 # metadata encoder, but the VorbisComment spec (used by Opus) 
-# specifies that # it uses the FLAC structure, base64-encoded.
+# specifies that it uses the FLAC structure, base64-encoded.
 from mutagen.flac import Picture
 from mutagen.oggopus import OggOpus
 import base64
