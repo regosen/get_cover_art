@@ -171,7 +171,7 @@ class CoverFinder(object):
                     local_art = self._find_folder_art(meta, folder)
 
                 # Avoid downloading if it exists and we are in "before" mode
-                if self.downloader and not self.use_folder_art=="before" or not local_art:
+                if self.downloader and (not self.use_folder_art=="before" or not local_art):
                     success = self._download(meta, art_path)
 
                 # Now, if "before" prefer the local art...
