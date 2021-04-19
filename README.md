@@ -18,6 +18,8 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - MP3
 - MP4 (.m4a)
 - FLAC
+- Ogg Vorbis
+- Opus
 
 ## Requirements
 - Python 3.5 or greater
