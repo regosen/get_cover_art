@@ -54,7 +54,7 @@ class CoverFinder(object):
         self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULTS.get('skip_artists')))
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
-        self.output_filename = options.get('output_filename')
+        self.output_filename = options.get('output_filename', DEFAULTS.get('output_filename'))
 
         self.files_processed = [] # artwork was downloaded / embedded
         self.files_skipped = []   # no artwork was available / embeddable
