@@ -52,7 +52,7 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--othe
                         Filename(s) of folder art to use. Accepts {artist},
                         {album}, and {title} for replacement: e.g. cover.jpg
                         or {album}-{artist}.jpg
-  --output-filename OUTPUT_FILENAME
+  --art-filename ART_FILENAME
                         Name to store downloaded art in, Accepts {artist},
                         {album}, and {title}. Default '{artist} - {album}.jpg'
   --test, --no_embed    scan and download only, don't embed artwork
@@ -87,7 +87,7 @@ can also use bracket formatting with the artist, album, and title fields:
 for instance, --folder-art-name "{artist}-{album}-cover.jpg" would create
 filenames such as "The Beatles-Abbey Road-cover.jpg".
 
-The "--output-filename" option allows you to specify the filename used to
+The "--art-filename" option allows you to specify the filename used to
 store downloaded files, for interoperability with other systems. You __must__
 be careful to avoid collisions between different albums: The default is
 "{artist} - {album}.jpg". If you know that all of the albums you're running
@@ -97,7 +97,7 @@ could use something more generic (such as "cover.jpg").
 _Pro Tip:_ If you have a cover.jpg in each album directory, you can use:
 "--use-folder-art before --folder-art-name cover.jpg --inline"
 and the local images will be used when present (avoiding network lookups).
-You could also specify "--output-filename cover.jpg" if you want to store the
+You could also specify "--art-filename cover.jpg" if you want to store the
 newly downloaded covers in a similar location (again, this is only sane
 in combination with --inline, in cases where each album is stored in 
 a separate directory).

@@ -15,7 +15,7 @@ DEFAULTS = {
     "skip_artwork": "./skip_artwork.txt",
     "use_folder_art": "none",
     "folder_art_name": ['cover.jpg', '_albumcover.jpg', 'folder.jpg'],
-    "output_filename": "{artist} - {album}.jpg",
+    "art_filename": "{artist} - {album}.jpg",
 }
 
 # utility class to cache a set of values
@@ -54,7 +54,7 @@ class CoverFinder(object):
         self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULTS.get('skip_artists')))
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
-        self.output_filename = options.get('output_filename', DEFAULTS.get('output_filename'))
+        self.art_filename = options.get('art_filename', DEFAULTS.get('art_filename'))
 
         self.files_processed = [] # artwork was downloaded / embedded
         self.files_skipped = []   # no artwork was available / embeddable
@@ -152,7 +152,7 @@ class CoverFinder(object):
                 return
             
             if meta:
-                filename = self._slugify(self.output_filename.format(artist=meta.artist, album=meta.album, title=meta.title))
+                filename = self._slugify(self.art_filename.format(artist=meta.artist, album=meta.album, title=meta.title))
                 art_path = os.path.join(art_folder, filename)
                 if self._should_skip(meta, art_path, self.verbose):
                     self.files_skipped.append(path)
