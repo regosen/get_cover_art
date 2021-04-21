@@ -9,15 +9,13 @@ from .cover_finder import CoverFinder, DEFAULTS
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', help="audio file, or folder of audio files (recursive)", default=".")
-parser.add_argument('--dest', help="destination of artwork", default=DEFAULTS.get('cover_art'))
-
-parser.add_argument('--use-folder-art', choices=['before', 'after', 'none'], default=DEFAULTS.get('use_folder_art'), help='Use image from local folder; "before" prevents downloads, "after" uses as a fallback.')
-parser.add_argument('--folder-art-name', default=DEFAULTS.get('folder_art_name'), help="Filename(s) of folder art to use. Accepts {artist}, {album}, and {title} for replacement: e.g. cover.jpg or {album}-{artist}.jpg", nargs="+")
-parser.add_argument('--art-filename', default=DEFAULTS.get('art_filename'), help="Name to store downloaded art in, Accepts {artist}, {album}, and {title}. Default '{artist} - {album}.jpg'")
-
+parser.add_argument('--art-dest', '--dest', help="set artwork destination folder", default=DEFAULTS.get('cover_art'))
+parser.add_argument('--art-dest-filename', default=DEFAULTS.get('art_dest_filename'), help="set artwork destination filename format. Accepts {artist}, {album}, and {title}. Default '{artist} - {album}.jpg")
+parser.add_argument('--external-art-mode', choices=['before', 'after', 'none'], default=DEFAULTS.get('external_art_mode'), help='Use image from local folder; "before" prevents downloads, "after" uses as a fallback.  Default is none.')
+parser.add_argument('--external-art-filename', default=DEFAULTS.get('external_art_filename'), help="Filename(s) of folder art to use. Accepts {artist}, {album}, and {title} for replacement: e.g. cover.jpg or {album}-{artist}.jpg", nargs="+")
 parser.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
 parser.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
-parser.add_argument('--inline', help="put artwork in same folders as audio files", action='store_true')
+parser.add_argument('--art-dest-inline', '--inline', help="put artwork in same folders as audio files", action='store_true')
 parser.add_argument('--force', help="overwrite existing artwork", action='store_true')
 parser.add_argument('--verbose', help="print verbose logging", action='store_true')
 parser.add_argument('--throttle', help="number of seconds between queries", default=0)
