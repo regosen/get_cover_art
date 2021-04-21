@@ -45,6 +45,7 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--options]
 
   --path PATH           audio file, or folder of audio files (recursive)
 
+artwork options:
   --art-dest DEST       set artwork destination folder
   --art-dest-inline     set artwork destination folder to same folders as audio files
   --art-dest-filename ART_DEST_FILENAME
@@ -58,12 +59,14 @@ python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--options]
                         {album}, and {title} for replacement: e.g. cover.jpg
                         or {album}-{artist}.jpg
 
+behavior options:
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
   --force               overwrite existing artwork
   --verbose             print verbose logging
   --throttle            wait X seconds between downloads
 
+filter options:
   --skip_artists SKIP_ARTISTS
                         file containing artists to skip
   --skip_albums SKIP_ALBUMS
