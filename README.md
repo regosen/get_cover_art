@@ -41,21 +41,23 @@ python3 -m pip install --upgrade get_cover_art
 
 ### From the Command Line
 ```
-python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--test] [--other options]
+python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--options]
 
   --path PATH           audio file, or folder of audio files (recursive)
+
   --art-dest DEST       set artwork destination folder
   --art-dest-inline     set artwork destination folder to same folders as audio files
   --art-dest-filename ART_DEST_FILENAME
                         set artwork destination filename format. Accepts {artist},
                         {album}, and {title}. Default '{artist} - {album}.jpg'
   --external-art-mode {before,after,none}
-                        Use image from local folder; "before" prevents
-                        downloads, "after" uses as a fallback. Default is none.
+                        Use images from local disk: "before" prevents
+                        downloads, "after" downloads as a fallback. Default is none.
   --external-art-filename EXTERNAL_ART_FILENAME [EXTERNAL_ART_FILENAME ...]
                         Filename(s) of folder art to use. Accepts {artist},
                         {album}, and {title} for replacement: e.g. cover.jpg
                         or {album}-{artist}.jpg
+
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
   --force               overwrite existing artwork
@@ -73,7 +75,10 @@ if you omit `path`, it will scan the current working directory
 
 _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no_download` to embed only the artwork you didn't prune.
 
-The external-art options allow you to default to embedding local folder art.
+
+#### Using external art sources
+
+The external-art options allow you to fall back on local folder art.
 Some other scraping systems may have created cover art: for instance, some
 Kodi scrapers create a "cover.jpg" image in each album directory.
 
