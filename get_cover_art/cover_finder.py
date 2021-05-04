@@ -74,6 +74,7 @@ class CoverFinder(object):
                 self.art_folder_override = os.path.abspath(self.art_folder_override)
                 Path(self.art_folder_override).mkdir(parents=True, exist_ok=True)
 
+        self.clear = options.get('clear')
         self.embed = not (options.get('no_embed') or options.get('test'))
         self.force = options.get('force')
 
@@ -86,7 +87,7 @@ class CoverFinder(object):
         if self.ignore_albums.has(meta.album):
             if verbose: print("Skipping ignored album (%s) for %s" % (meta.album, art_path))
             return True
-        if meta.has_embedded_art():
+        if meta.has_embedded_art() and not self.clear:
             if verbose: print("Skipping existing embedded artwork for %s" % (art_path))
             return True
         if self.ignore_artwork.has(art_path):
@@ -184,9 +185,14 @@ class CoverFinder(object):
                     success = bool(local_art)
                     art_path = local_art
 
+                file_changed = self.clear and meta.clear() # do this regardless of finding art
+                
                 if self.embed:
                     success = success and meta.embed(art_path)
                 
+                if success or file_changed:
+                    meta.save()
+
                 if success:
                     self.files_processed.append(path)
                 else:
@@ -194,7 +200,7 @@ class CoverFinder(object):
                     self.files_skipped.append(path)
 
         except Exception as e:
-            print("ERROR: failed to process %s, %s" % (path, str(e)))
+            print("ERROR: failed to process %s, %s: %s" % (path, type(e).__name__, str(e)))
             self.files_failed.append(path)
             
     def scan_folder(self, folder="."):

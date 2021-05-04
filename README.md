@@ -62,6 +62,7 @@ artwork options:
 behavior options:
   --test, --no_embed    scan and download only, don't embed artwork
   --no_download         embed only previously-downloaded artwork
+  --clear               clear artwork from audio file (regardless of finding art)
   --force               overwrite existing artwork
   --verbose             print verbose logging
   --throttle            wait X seconds between downloads
