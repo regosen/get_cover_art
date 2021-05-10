@@ -22,9 +22,10 @@ class MetaMP3(MetaAudio):
             return True
         return False
 
-    def embed_art(self, art_path):
-        self.audio.tags.delall("APIC") # Delete existing art
+    def detach_art(self):
+        self.audio.tags.delall("APIC")
 
+    def embed_art(self, art_path):
         # from https://stackoverflow.com/questions/409949/how-do-you-embed-album-art-into-an-mp3-using-python
         self.audio.tags.add(
             APIC(
@@ -35,4 +36,6 @@ class MetaMP3(MetaAudio):
                 data=open(art_path, 'rb').read()
             )
         )
+
+    def save(self):
         self.audio.save()

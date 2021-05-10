@@ -19,8 +19,10 @@ class MetaFLAC(MetaAudio):
     def has_embedded_art(self):
         return self.audio.pictures != []
 
-    def embed_art(self, art_path):
+    def detach_art(self):
         self.audio.clear_pictures()
+
+    def embed_art(self, art_path):
         artworkfile = open(art_path, 'rb').read()
         pic = Picture()
         with open(art_path, "rb") as f:
@@ -32,4 +34,6 @@ class MetaFLAC(MetaAudio):
             pic.mime = 'image/jpeg'
         pic.desc = 'front cover'
         self.audio.add_picture(pic)
+
+    def save(self):
         self.audio.save()

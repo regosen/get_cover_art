@@ -19,6 +19,7 @@ parser_art.add_argument('--external-art-filename', default=DEFAULTS.get('externa
 
 parser_behavior = parser.add_argument_group('behavior options')
 parser_behavior.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
+parser_behavior.add_argument('--clear', help="clear artwork from audio file (regardless of finding art)", action='store_true')
 parser_behavior.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
 parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
 parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')

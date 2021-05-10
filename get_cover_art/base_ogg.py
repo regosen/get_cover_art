@@ -24,6 +24,9 @@ class MetaOgg(MetaAudio):
         rv = bool(self.audio.get('metadata_block_picture', None))
         return rv
 
+    def detach_art(self):
+        self.audio.pop('metadata_block_picture')
+    
     def embed_art(self, art_path):
         artworkfile = open(art_path, 'rb').read()
         pic = Picture()
@@ -36,5 +39,6 @@ class MetaOgg(MetaAudio):
             pic.mime = 'image/jpeg'
         pic.desc = 'front cover'
         self.audio['metadata_block_picture'] = base64.b64encode(pic.write()).decode('utf8')
-        self.audio.save()
 
+    def save(self):
+        self.audio.save()

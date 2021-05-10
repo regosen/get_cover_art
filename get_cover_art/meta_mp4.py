@@ -20,9 +20,12 @@ class MetaMP4(MetaAudio):
     def has_embedded_art(self):
         return 'covr' in self.audio.tags
 
+    def detach_art(self):
+        self.audio.tags['covr'] = []
+
     def embed_art(self, art_path):
-        covr = []
         artworkfile = open(art_path, 'rb').read()
-        covr.append(M4ACover(artworkfile, M4ACover.FORMAT_JPEG))
-        self.audio.tags['covr'] = covr
+        self.audio.tags['covr'] = [M4ACover(artworkfile, M4ACover.FORMAT_JPEG)]
+
+    def save(self):
         self.audio.save()
