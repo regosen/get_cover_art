@@ -18,9 +18,7 @@ class MetaMP3(MetaAudio):
             raise Exception("missing ID3 tags")
 
     def has_embedded_art(self):
-        if self.audio.tags.getall("APIC"):
-            return True
-        return False
+        return self.audio.tags.getall("APIC") != []
 
     def detach_art(self):
         self.audio.tags.delall("APIC")

@@ -21,8 +21,7 @@ class MetaOgg(MetaAudio):
             raise Exception("missing VorbisComment tags (in ogg vorbis or opus file)")
     
     def has_embedded_art(self):
-        rv = bool(self.audio.get('metadata_block_picture', None))
-        return rv
+        return bool(self.audio.get('metadata_block_picture', None))
 
     def detach_art(self):
         self.audio.pop('metadata_block_picture')
