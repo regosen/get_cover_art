@@ -1,31 +1,14 @@
-import re, time
-
+import time
 from urllib.request import Request, urlopen
 from urllib.parse import quote
-
-# from https://stackoverflow.com/questions/10294032/python-replace-typographical-quotes-dashes-etc-with-their-ascii-counterparts
-NORMALIZATION_TABLE = dict( [ (ord(x), ord(y)) for x,y in zip( u"‘’´“”–-[{}]",  u"'''\"\"--(())") ] ) 
-
-def normalize_field(field):
-    return field.lower().strip().translate(NORMALIZATION_TABLE)
-
-def normalize_artist_name(artist):
-    artist_norm = normalize_field(artist)
-    if artist_norm.endswith(', the'):
-        # account for "The X" vs "X, The"
-        artist_norm = "the " + artist_norm[:-5]
-    return artist_norm
-
-def normalize_album_name(album):
-    album_norm = normalize_field(album)
-    # strip "(disc 1)", etc. from album name
-    album_norm = re.sub(r" \(disc \d+\)", "", album_norm)
-    return album_norm
+from .normalizer import ArtistNormalizer, AlbumNormalizer
 
 class AppleDownloader(object):
     def __init__(self, verbose, throttle):
         self.verbose = verbose
         self.throttle = throttle
+        self.artist_normalizer = ArtistNormalizer()
+        self.album_normalizer = AlbumNormalizer()
         
     def _urlopen_safe(self, url):
         q = Request(url)
@@ -44,7 +27,7 @@ class AppleDownloader(object):
                 print("ERROR: reading URL (%s): %s" % (url, str(error)))
             return ""
 
-    def _dload(self, image_url, dest_path):
+    def _download_from_url(self, image_url, dest_path):
         image_data = self._urlopen_safe(image_url)
         output = open(dest_path,'wb')
         output.write(image_data)
@@ -54,8 +37,8 @@ class AppleDownloader(object):
     def download(self, meta, art_path):
         if self.throttle:
             time.sleep(self.throttle)
-        artist_lower = normalize_artist_name(meta.artist)
-        album_lower = normalize_album_name(meta.album)
+        artist_lower = self.artist_normalizer.normalize(meta.artist)
+        album_lower = self.album_normalizer.normalize(meta.album)
         query = "%s %s" % (artist_lower, album_lower)
         if album_lower in artist_lower:
             query = artist_lower
@@ -71,8 +54,8 @@ class AppleDownloader(object):
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
                 for album_info in reversed(info['results']):
-                    artist = normalize_artist_name(album_info['artistName'])
-                    album = normalize_album_name(album_info['collectionName'])
+                    artist = self.artist_normalizer.normalize(album_info['artistName'])
+                    album = self.album_normalizer.normalize(album_info['collectionName'])
                     
                     if not artist_lower in artist.lower():
                         continue
@@ -83,7 +66,7 @@ class AppleDownloader(object):
                     if album_lower == album.lower():
                         break # exact match found
                 if art:
-                    self._dload(art, art_path)
+                    self._download_from_url(art, art_path)
                     return True
                 elif self.verbose:
                     print("Failed to find matching artist (%s) and album (%s)" % (artist_lower, album_lower))
