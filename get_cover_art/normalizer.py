@@ -1,5 +1,22 @@
 import re
 
+# based on https://www.tutorialspoint.com/roman-to-integer-in-python
+def romanToInt(s):
+    if not re.match(r"^[I|V|X|L|C|D|M]+$", s, flags=re.IGNORECASE):
+        return 0
+    roman = {'I':1,'V':5,'X':10,'L':50,'C':100,'D':500,'M':1000,'IV':4,'IX':9,'XL':40,'XC':90,'CD':400,'CM':900}
+    i = 0
+    num = 0
+    s = s.upper()
+    while i < len(s):
+        if i+1<len(s) and s[i:i+2] in roman:
+            num+=roman[s[i:i+2]]
+            i+=2
+        else:
+            num+=roman[s[i]]
+            i+=1
+    return num
+
 class Normalizer(object):
     def __init__(self):
         self.substitutions = {
@@ -8,7 +25,6 @@ class Normalizer(object):
             '^a ': '',
         }
         
-    # TODO: deal reliably with roman numerals vs numbers
     def normalize(self, field):
         # this must come before removing punctuation
         for (key, value) in self.substitutions.items():
@@ -17,8 +33,16 @@ class Normalizer(object):
         # remove punctuation
         field = re.sub(r'[^\w\s]', '', field)
 
-        # this will standardize whitespace to a single space between words
-        return ' '.join(field.split()).lower()
+        # splitting + rejoining standardizes whitespace to a single space between words
+        words = field.split()
+
+        # also check if any word is a roman numeral, replace with numerical equivalent
+        for i, word in enumerate(words):
+            roman = romanToInt(word)
+            if roman > 0:
+                words[i] = str(roman)
+
+        return ' '.join(words).lower()
 
 
 class ArtistNormalizer(Normalizer):
@@ -34,5 +58,5 @@ class ArtistNormalizer(Normalizer):
 class AlbumNormalizer(Normalizer):
     def normalize(self, album):
         # strip "(disc 1)", etc. from album names
-        album = re.sub(r" [\(\[{]disc \d+[}\)\]]", "", album, flags=re.IGNORECASE)
+        album = re.sub(r" [\(\[{]disc [\d|I|V|X]+[}\)\]]", "", album, flags=re.IGNORECASE)
         return super().normalize(album)
