@@ -7,7 +7,7 @@ class DeRomanizer(object):
 
     def convert_word(self, word):
         if not re.match(r"^[I|V|X|L|C|D|M]+$", word, flags=re.IGNORECASE):
-            return 0
+            return word
 
         i = 0
         num = 0
@@ -19,8 +19,8 @@ class DeRomanizer(object):
             else:
                 num+=self.romans[word[i]]
                 i+=1
-        return num
+        return str(num)
 
     def convert_all(self, field):
-        converted = [self.convert_word(word for word in field.split())]
+        converted = [self.convert_word(word) for word in field.split()]
         return ' '.join(converted)

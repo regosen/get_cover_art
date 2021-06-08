@@ -3,6 +3,9 @@ import re
 class Normalizer(object):
     def __init__(self):
         self.substitutions = {
+             # make sure dashes create spaces instead of joining words
+            '-': ' ',
+            '–': ' ',
             '&': ' and ',
             '^the ': '',
             '^a ': '',

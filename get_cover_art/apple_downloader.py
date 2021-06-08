@@ -43,26 +43,31 @@ class AppleDownloader(object):
         elif artist in album:
             query_term = album
         url = "https://itunes.apple.com/search?term=%s&media=music&entity=album" % quote(query_term)
-        return self._urlopen_text(url)
+        json = self._urlopen_text(url)
+        if json:
+            try:
+                return eval(json)
+            except:
+                pass
+        return {}
 
     def _get_data(self, meta):
         artist = self.artist_normalizer.normalize(meta.artist)
         album = self.album_normalizer.normalize(meta.album)
-        json = self._query(artist, album)
-        if not json:
+        info = self._query(artist, album)
+        if not info or not info['resultCount']:
             # no result found, try replacing any roman numerals
             artist = self.deromanizer.convert_all(artist)
             album = self.deromanizer.convert_all(album)
-            json = self._query(artist, album)
-        return (artist, album, json)
+            info = self._query(artist, album)
+        return (artist, album, info)
 
     def download(self, meta, art_path):
         if self.throttle:
             time.sleep(self.throttle)
-        (meta_artist, meta_album, json) = self._get_data(meta)
-        if json:
+        (meta_artist, meta_album, info) = self._get_data(meta)
+        if info:
             try:
-                info = eval(json)
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
                 for album_info in reversed(info['results']):
@@ -80,10 +85,10 @@ class AppleDownloader(object):
                 if art:
                     self._download_from_url(art, art_path)
                     return True
-                elif self.verbose:
-                    print("Failed to find matching artist (%s) and album (%s)" % (meta_artist, meta_album))
-                    return False
             except Exception as error:
                 print("ERROR encountered when downloading for artist (%s) and album (%s)" % meta_artist, meta_album)
                 print(error)
+
+        if self.verbose:
+            print("Failed to find matching artist (%s) and album (%s)" % (meta_artist, meta_album))
         return False
