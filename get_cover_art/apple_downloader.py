@@ -86,7 +86,7 @@ class AppleDownloader(object):
                     self._download_from_url(art, art_path)
                     return True
             except Exception as error:
-                print("ERROR encountered when downloading for artist (%s) and album (%s)" % meta_artist, meta_album)
+                print("ERROR encountered when downloading for artist (%s) and album (%s)" % (meta_artist, meta_album))
                 print(error)
 
         if self.verbose:
