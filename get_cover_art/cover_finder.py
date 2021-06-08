@@ -2,11 +2,11 @@ import os, unicodedata, re
 from pathlib import Path
 
 from .apple_downloader import AppleDownloader
-from .meta_mp3 import MetaMP3
-from .meta_mp4 import MetaMP4
-from .meta_flac import MetaFLAC
-from .meta_opus import MetaOpus
-from .meta_vorbis import MetaVorbis
+from .meta.meta_mp3 import MetaMP3
+from .meta.meta_mp4 import MetaMP4
+from .meta.meta_flac import MetaFLAC
+from .meta.meta_opus import MetaOpus
+from .meta.meta_vorbis import MetaVorbis
 
 DEFAULTS = {
     "cover_art": "_cover_art",

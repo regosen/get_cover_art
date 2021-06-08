@@ -3,12 +3,14 @@ import re
 class Normalizer(object):
     def __init__(self):
         self.substitutions = {
+             # make sure dashes create spaces instead of joining words
+            '-': ' ',
+            '–': ' ',
             '&': ' and ',
             '^the ': '',
             '^a ': '',
         }
         
-    # TODO: deal reliably with roman numerals vs numbers
     def normalize(self, field):
         # this must come before removing punctuation
         for (key, value) in self.substitutions.items():
@@ -17,7 +19,7 @@ class Normalizer(object):
         # remove punctuation
         field = re.sub(r'[^\w\s]', '', field)
 
-        # this will standardize whitespace to a single space between words
+        # splitting + rejoining standardizes whitespace to a single space between words
         return ' '.join(field.split()).lower()
 
 
@@ -34,5 +36,5 @@ class ArtistNormalizer(Normalizer):
 class AlbumNormalizer(Normalizer):
     def normalize(self, album):
         # strip "(disc 1)", etc. from album names
-        album = re.sub(r" [\(\[{]disc \d+[}\)\]]", "", album, flags=re.IGNORECASE)
+        album = re.sub(r" [\(\[{]disc [\d|I|V|X]+[}\)\]]", "", album, flags=re.IGNORECASE)
         return super().normalize(album)
