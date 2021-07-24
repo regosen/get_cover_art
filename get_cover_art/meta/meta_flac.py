@@ -23,7 +23,6 @@ class MetaFLAC(MetaAudio):
         self.audio.clear_pictures()
 
     def embed_art(self, art_path):
-        artworkfile = open(art_path, 'rb').read()
         pic = Picture()
         with open(art_path, "rb") as f:
             pic.data = f.read()

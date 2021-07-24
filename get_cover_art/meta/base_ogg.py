@@ -27,7 +27,6 @@ class MetaOgg(MetaAudio):
         self.audio.pop('metadata_block_picture')
     
     def embed_art(self, art_path):
-        artworkfile = open(art_path, 'rb').read()
         pic = Picture()
         with open(art_path, "rb") as f:
             pic.data = f.read()
