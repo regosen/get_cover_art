@@ -1,6 +1,6 @@
 from .meta_audio import MetaAudio
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, error
+from mutagen.id3 import ID3, APIC
 
 class MetaMP3(MetaAudio):
     def __init__(self, path):
