@@ -25,7 +25,8 @@ class MetaMP4(MetaAudio):
 
     def embed_art(self, art_path):
         artworkfile = open(art_path, 'rb').read()
-        self.audio.tags['covr'] = [M4ACover(artworkfile, M4ACover.FORMAT_JPEG)]
+        format = M4ACover.FORMAT_PNG if art_path.endswith('png') else M4ACover.FORMAT_JPEG
+        self.audio.tags['covr'] = [M4ACover(artworkfile, format)]
 
     def save(self):
         self.audio.save()

@@ -28,7 +28,7 @@ class MetaMP3(MetaAudio):
         self.audio.tags.add(
             APIC(
                 encoding=3, # 3 is for utf-8
-                mime='image/jpeg', # image/jpeg or image/png
+                mime = MetaAudio.get_mime_type(art_path),
                 type=3, # 3 is for the cover image
                 desc=u'Cover',
                 data=open(art_path, 'rb').read()

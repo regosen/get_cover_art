@@ -5,6 +5,8 @@ from .meta_audio import MetaAudio
 from mutagen.flac import Picture
 import base64
 
+ART_TAG = 'metadata_block_picture'
+
 class MetaOgg(MetaAudio):
     def __init__(self, path):
         self.audio_path = path
@@ -21,22 +23,19 @@ class MetaOgg(MetaAudio):
             raise Exception("missing VorbisComment tags (in ogg vorbis or opus file)")
     
     def has_embedded_art(self):
-        return bool(self.audio.get('metadata_block_picture', None))
+        return bool(self.audio.get(ART_TAG, None))
 
     def detach_art(self):
-        self.audio.pop('metadata_block_picture')
+        self.audio.pop(ART_TAG)
     
     def embed_art(self, art_path):
         pic = Picture()
         with open(art_path, "rb") as f:
             pic.data = f.read()
         pic.type = 3 # front cover
-        if art_path.endswith('png'):
-            pic.mime = 'image/png'
-        else:
-            pic.mime = 'image/jpeg'
+        pic.mime = MetaAudio.get_mime_type(art_path)
         pic.desc = 'front cover'
-        self.audio['metadata_block_picture'] = base64.b64encode(pic.write()).decode('utf8')
+        self.audio[ART_TAG] = base64.b64encode(pic.write()).decode('utf8')
 
     def save(self):
         self.audio.save()

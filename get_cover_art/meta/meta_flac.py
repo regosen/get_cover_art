@@ -27,10 +27,7 @@ class MetaFLAC(MetaAudio):
         with open(art_path, "rb") as f:
             pic.data = f.read()
         pic.type = 3 # front cover
-        if art_path.endswith('png'):
-            pic.mime = 'image/png'
-        else:
-            pic.mime = 'image/jpeg'
+        pic.mime = MetaAudio.get_mime_type(art_path)
         pic.desc = 'front cover'
         self.audio.add_picture(pic)
 
