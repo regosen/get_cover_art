@@ -4,7 +4,7 @@ import os
 class MetaAudio(object):
     @staticmethod
     def get_mime_type(art_path):
-        return 'image/png' if art_path.endswith('png') else 'image/jpeg'
+        return 'image/png' if art_path.lower().endswith('.png') else 'image/jpeg'
         
     def embed(self, art_path, detach_existing = True):
         if os.path.exists(art_path):
