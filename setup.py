@@ -1,9 +1,10 @@
-# rm -rf ./dist
-# python3 setup.py sdist bdist_wheel
-# python3 -m twine upload --repository pypi dist/*
-#
 # to test locally:
 # python setup.py develop
+#
+# to deploy:
+# rm -rf ./dist
+# python setup.py sdist bdist_wheel
+# python -m twine upload --repository pypi dist/*
 #
 # more info here:
 # https://packaging.python.org/tutorials/packaging-projects/#uploading-your-project-to-pypi
@@ -12,7 +13,7 @@ import setuptools
 
 setuptools.setup(name = 'get_cover_art',
     version = '1.4.11',
-    python_requires='>=3.5',
+    python_requires = '>=3.5',
     author = 'Rego Sen',
     author_email = 'regosen@gmail.com',
     url = 'https://github.com/regosen/get_cover_art',
@@ -21,8 +22,8 @@ setuptools.setup(name = 'get_cover_art',
     long_description_content_type = "text/markdown",
     license = 'MIT',
     keywords = 'cover album art artwork embed itunes apple music mp3 id3 m4a mp4 aac xmp flac ogg vorbis opus songs',
-    packages=setuptools.find_packages(),
-    install_requires=[
+    packages = setuptools.find_packages(),
+    install_requires = [
         'mutagen',
     ],
     classifiers = [
