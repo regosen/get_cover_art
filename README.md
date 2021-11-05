@@ -24,24 +24,25 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 ## Requirements
 - Python 3.5 or greater
 - Python packages: [mutagen](https://pypi.org/project/mutagen/)
+  - automatically installed if you use `pip install` below
 
 ### Installation on MacOS using Homebrew
 
 ```
 brew install python
-python3 -m pip install mutagen
-python3 -m pip install get_cover_art
+python -m pip install mutagen
+python -m pip install get_cover_art
 ```
 And then to upgrade existing installations:
 ```
-python3 -m pip install --upgrade get_cover_art
+python -m pip install --upgrade get_cover_art
 ```
 
 ## Usage
 
 ### From the Command Line
 ```
-python -m get_cover_art [--path=<path_to_audio_file_or_folder>] [--options]
+[python -m] get_cover_art [--path=<path_to_audio_file_or_folder>] [--options]
 
   --path PATH           audio file, or folder of audio files (recursive)
 
