@@ -124,6 +124,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 *.txt
-setup.py
 MANIFEST.in
 *.jpg
