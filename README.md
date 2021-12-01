@@ -67,21 +67,51 @@ behavior options:
   --force               overwrite existing artwork
   --verbose             print verbose logging
   --throttle            wait X seconds between downloads
+  --no_skip             don't skip previously-scanned files
 
 filter options:
-  --skip_artists SKIP_ARTISTS
-                        file containing artists to skip
-  --skip_albums SKIP_ALBUMS
-                        file containing albums to skip
   --skip_artwork SKIP_ARTWORK
-                        file containing destination art files to skip
+                        (maintained between runs) file listing destination art files to skip
+  --skip_artists SKIP_ARTISTS
+                        file listing artists to skip
+  --skip_albums SKIP_ALBUMS
+                        file listing albums to skip
 ```
 if you omit `path`, it will scan the current working directory
 
 _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no_download` to embed only the artwork you didn't prune.
 
+### From the Python Environment
+```
+from get_cover_art import CoverFinder
 
-#### Using external art sources
+finder = CoverFinder(OPTIONS)
+
+# then you can run either of these:
+finder.scan_folder(PATH_TO_AUDIO_LIBRARY)
+finder.scan_file(PATH_TO_AUDIO_FILE)
+```
+
+- `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
+- you can omit `PATH_TO_AUDIO_LIBRARY` to default to your current directory
+- your `CoverFinder` object keeps a list of files_processed, files_skipped, files_failed, files_invalid
+
+## How it works
+1. First, it recursively scans your provided folder for supported files.
+  - Step 1 is skipped if you specified a single file instead of a folder.
+2. For each file without embedded artwork (or all files if `--force` is used), attempts to download from Apple Music based on artist and album metadata.
+  - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
+    - This works by caching a list of previously downloaded/attempted artwork (using `skip_artwork.txt`)
+    - You can ignore the cached list by using `--no_skip`
+  - Step 2 is also skipped based on `--no_download` or other `--skip_*` options.
+3. If artwork is found, it's embedded into the audio file.
+
+### Why do you download from Apple Music and not Google image search?
+1. Google's Image Search API requires a dev token (so does Apple Music's API, but not its public web query URL).
+2. Google search queries are heavily throttled.
+3. Apple Music's cover sizes are standardized and sufficiently large.
+
+### Using external art sources
 
 The external-art options allow you to fall back on local folder art.
 Some other scraping systems may have created cover art: for instance, some
@@ -112,34 +142,6 @@ You could also specify "--art-dest-filename cover.jpg" if you want to store the
 newly downloaded covers in a similar location (again, this is only sane
 in combination with --art-dest-inline, in cases where each album is stored in 
 a separate directory).
-
-### From the Python Environment
-```
-from get_cover_art import CoverFinder
-
-finder = CoverFinder(OPTIONS)
-
-# then you can run either of these:
-finder.scan_folder(PATH_TO_AUDIO_LIBRARY)
-finder.scan_file(PATH_TO_AUDIO_FILE)
-```
-
-- `OPTIONS` is a dict of the same options listed for the commandline, e.g. `--verbose` -> `{'verbose': True}`
-- you can omit `PATH_TO_AUDIO_LIBRARY` to default to your current directory
-- your `CoverFinder` object keeps a list of files_processed, files_skipped, files_failed, files_invalid
-
-## How it works
-1. First, it recursively scans your provided folder for supported files.
-  - Step 1 is skipped if you specified a single file instead of a folder.
-2. For each file without embedded artwork (or all files if `--force` is used), attempts to download from Apple Music based on artist and album metadata.
-  - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
-  - Step 2 is also skipped based on `--no_download` or `--skip_*` options.
-3. If artwork is found, it's embedded into the audio file.
-
-### Why do you download from Apple Music and not Google image search?
-1. Google's Image Search API requires a dev token (so does Apple Music's API, but not its public web query URL).
-2. Google search queries are heavily throttled.
-3. Apple Music's cover sizes are standardized and sufficiently large.
 
 ## Troubleshooting
 

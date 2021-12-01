@@ -25,11 +25,12 @@ def get_args():
     parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
     parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')
     parser_behavior.add_argument('--throttle', help="number of seconds between queries", default=0)
+    parser_behavior.add_argument('--no_skip', help="don't skip previously-scanned files", action='store_true')
 
     parser_filters = parser.add_argument_group('filter options')
-    parser_filters.add_argument('--skip_artists', help="file containing artists to skip", default=DEFAULTS.get('skip_artists'))
-    parser_filters.add_argument('--skip_albums', help="file containing albums to skip", default=DEFAULTS.get('skip_albums'))
-    parser_filters.add_argument('--skip_artwork', help="file containing destination art files to skip", default=DEFAULTS.get('skip_artwork'))
+    parser_filters.add_argument('--skip_artwork', help="(maintained between runs) file listing destination art files to skip", default=DEFAULTS.get('skip_artwork'))
+    parser_filters.add_argument('--skip_artists', help="file listing artists to skip", default=DEFAULTS.get('skip_artists'))
+    parser_filters.add_argument('--skip_albums', help="file listing albums to skip", default=DEFAULTS.get('skip_albums'))
 
     return parser.parse_args()
 

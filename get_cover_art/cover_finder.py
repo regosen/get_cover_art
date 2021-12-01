@@ -32,8 +32,9 @@ class ValueStore(object):
         else:
             self.keys = set([])
 
-    def clear(self):
+    def reset(self):
         self.keys = set([])
+        self.filename = ''
 
     def has(self, key):
         return key in self.keys
@@ -44,9 +45,10 @@ class ValueStore(object):
             self._update()
 
     def _update(self):
-        file = open(self.filename,'w')
-        contents = file.write(self.delim.join(sorted(self.keys)))
-        file.close()
+        if os.path.isfile(self.filename):
+            file = open(self.filename, 'w')
+            file.write(self.delim.join(sorted(self.keys)))
+            file.close()
 
 
 class CoverFinder(object):
@@ -55,6 +57,8 @@ class CoverFinder(object):
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
         self.art_dest_filename = options.get('art_dest_filename', DEFAULTS.get('art_dest_filename'))
+        if options.get('no_skip'):
+            self.ignore_artwork.reset()
 
         self.files_processed = [] # artwork was downloaded / embedded
         self.files_skipped = []   # no artwork was available / embeddable
