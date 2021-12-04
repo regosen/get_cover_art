@@ -1,22 +1,36 @@
 import time
-from urllib.request import Request, urlopen
-from urllib.parse import quote
+from urllib.request import Request, urlopen, HTTPError
+from urllib.parse import urlparse, quote
 from .normalizer import ArtistNormalizer, AlbumNormalizer
 from .deromanizer import DeRomanizer
 
+QUERY_TEMPLATE = "https://itunes.apple.com/search?term=%s&media=music&entity=album"
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36"
+THROTTLED_WAIT_MINUTES = 30
+THROTTLED_HTTP_CODES = [403, 429]
+
 class AppleDownloader(object):
-    def __init__(self, verbose, throttle):
+    def __init__(self, verbose):
         self.verbose = verbose
-        self.throttle = throttle
         self.artist_normalizer = ArtistNormalizer()
         self.album_normalizer = AlbumNormalizer()
         self.deromanizer = DeRomanizer()
         
     def _urlopen_safe(self, url):
-        q = Request(url)
-        q.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36')
-        data = urlopen(q)
-        return data.read()
+        while True:
+            try:
+                q = Request(url)
+                q.add_header("User-Agent", USER_AGENT)
+                response = urlopen(q)
+                return response.read()
+            except HTTPError as e:
+                if e.code in THROTTLED_HTTP_CODES:
+                    # we've been throttled, time to sleep
+                    domain = urlparse(url).netloc
+                    print("WARNING: Request limit exceeded from %s, trying again in %d minutes..." % (domain, THROTTLED_WAIT_MINUTES))
+                    time.sleep(THROTTLED_WAIT_MINUTES * 60)
+                else:
+                    raise e
 
     def _urlopen_text(self, url):
         try:
@@ -42,7 +56,7 @@ class AppleDownloader(object):
             query_term = artist
         elif artist in album:
             query_term = album
-        url = "https://itunes.apple.com/search?term=%s&media=music&entity=album" % quote(query_term)
+        url = QUERY_TEMPLATE % quote(query_term)
         json = self._urlopen_text(url)
         if json:
             try:
@@ -63,8 +77,6 @@ class AppleDownloader(object):
         return (artist, album, info)
 
     def download(self, meta, art_path):
-        if self.throttle:
-            time.sleep(self.throttle)
         (meta_artist, meta_album, info) = self._get_data(meta)
         if info:
             try:

@@ -66,7 +66,6 @@ behavior options:
   --clear               clear artwork from audio file (regardless of finding art)
   --force               overwrite existing artwork
   --verbose             print verbose logging
-  --throttle            wait X seconds between downloads
   --no_skip             don't skip previously-scanned files
 
 filter options:

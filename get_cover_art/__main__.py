@@ -24,7 +24,6 @@ def get_args():
     parser_behavior.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
     parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
     parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')
-    parser_behavior.add_argument('--throttle', help="number of seconds between queries", default=0)
     parser_behavior.add_argument('--no_skip', help="don't skip previously-scanned files", action='store_true')
 
     parser_filters = parser.add_argument_group('filter options')
