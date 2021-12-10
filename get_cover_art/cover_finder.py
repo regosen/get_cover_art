@@ -54,6 +54,7 @@ class ValueStore(object):
 
 class CoverFinder(object):
     def __init__(self, options={}):
+        options = {k.replace('-', '_'): v for k, v in options.items()}
         self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULTS.get('skip_artists')))
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
