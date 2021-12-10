@@ -61,24 +61,25 @@ artwork options:
                         or {album}-{artist}.jpg
 
 behavior options:
-  --test, --no_embed    scan and download only, don't embed artwork
-  --no_download         embed only previously-downloaded artwork
+  --test, --no-embed    scan and download only, don't embed artwork
+  --no-download         embed only previously-downloaded artwork
   --clear               clear artwork from audio file (regardless of finding art)
   --force               overwrite existing artwork
   --verbose             print verbose logging
-  --no_skip             don't skip previously-scanned files
+  --no-skip             don't skip previously-scanned files
+  --throttle THROTTLE   number of seconds to wait if request is rejected
 
 filter options:
-  --skip_artwork SKIP_ARTWORK
+  --skip-artwork SKIP_ARTWORK
                         (maintained between runs) file listing destination art files to skip
-  --skip_artists SKIP_ARTISTS
+  --skip-artists SKIP_ARTISTS
                         file listing artists to skip
-  --skip_albums SKIP_ALBUMS
+  --skip-albums SKIP_ALBUMS
                         file listing albums to skip
 ```
 if you omit `path`, it will scan the current working directory
 
-_Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no_download` to embed only the artwork you didn't prune.
+_Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no-download` to embed only the artwork you didn't prune.
 
 ### From the Python Environment
 ```
@@ -101,8 +102,8 @@ finder.scan_file(PATH_TO_AUDIO_FILE)
 2. For each file without embedded artwork (or all files if `--force` is used), attempts to download from Apple Music based on artist and album metadata.
   - Step 2 is skipped if it had already downloaded (or attempted to download) the image file.
     - This works by caching a list of previously downloaded/attempted artwork (using `skip_artwork.txt`)
-    - You can ignore the cached list by using `--no_skip`
-  - Step 2 is also skipped based on `--no_download` or other `--skip_*` options.
+    - You can ignore the cached list by using `--no-skip`
+  - Step 2 is also skipped based on `--no-download` or other `--skip-*` options.
 3. If artwork is found, it's embedded into the audio file.
 
 ### Why do you download from Apple Music and not Google image search?

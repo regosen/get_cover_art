@@ -6,12 +6,12 @@ from .deromanizer import DeRomanizer
 
 QUERY_TEMPLATE = "https://itunes.apple.com/search?term=%s&media=music&entity=album"
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36"
-THROTTLED_WAIT_MINUTES = 30
 THROTTLED_HTTP_CODES = [403, 429]
 
 class AppleDownloader(object):
-    def __init__(self, verbose):
+    def __init__(self, verbose, throttle):
         self.verbose = verbose
+        self.throttle = throttle
         self.artist_normalizer = ArtistNormalizer()
         self.album_normalizer = AlbumNormalizer()
         self.deromanizer = DeRomanizer()
@@ -27,8 +27,8 @@ class AppleDownloader(object):
                 if e.code in THROTTLED_HTTP_CODES:
                     # we've been throttled, time to sleep
                     domain = urlparse(url).netloc
-                    print("WARNING: Request limit exceeded from %s, trying again in %d minutes..." % (domain, THROTTLED_WAIT_MINUTES))
-                    time.sleep(THROTTLED_WAIT_MINUTES * 60)
+                    print("WARNING: Request limit exceeded from %s, trying again in %d seconds..." % (domain, self.throttle))
+                    time.sleep(self.throttle)
                 else:
                     raise e
 

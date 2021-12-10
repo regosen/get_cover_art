@@ -19,17 +19,18 @@ def get_args():
     parser_art.add_argument('--external-art-filename', default=DEFAULTS.get('external_art_filename'), help="Filename(s) of folder art to use. Accepts {artist}, {album}, and {title} for replacement: e.g. cover.jpg or {album}-{artist}.jpg", nargs="+")
 
     parser_behavior = parser.add_argument_group('behavior options')
-    parser_behavior.add_argument('--test', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
+    parser_behavior.add_argument('--test', '--no-embed', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
     parser_behavior.add_argument('--clear', help="clear artwork from audio file (regardless of finding art)", action='store_true')
-    parser_behavior.add_argument('--no_download', help="embed only previously-downloaded artwork", action='store_true')
+    parser_behavior.add_argument('--no-download', '--no_download', help="embed only previously-downloaded artwork", action='store_true')
     parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
     parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')
-    parser_behavior.add_argument('--no_skip', help="don't skip previously-scanned files", action='store_true')
+    parser_behavior.add_argument('--no-skip', '--no_skip', help="don't skip previously-scanned files", action='store_true')
+    parser_behavior.add_argument('--throttle', help="number of seconds to wait ", default=0)
 
     parser_filters = parser.add_argument_group('filter options')
-    parser_filters.add_argument('--skip_artwork', help="(maintained between runs) file listing destination art files to skip", default=DEFAULTS.get('skip_artwork'))
-    parser_filters.add_argument('--skip_artists', help="file listing artists to skip", default=DEFAULTS.get('skip_artists'))
-    parser_filters.add_argument('--skip_albums', help="file listing albums to skip", default=DEFAULTS.get('skip_albums'))
+    parser_filters.add_argument('--skip-artwork', '--skip_artwork', help="(maintained between runs) file listing destination art files to skip", default=DEFAULTS.get('skip_artwork'))
+    parser_filters.add_argument('--skip-artists', '--skip_artists', help="file listing artists to skip", default=DEFAULTS.get('skip_artists'))
+    parser_filters.add_argument('--skip-albums', '--skip_albums', help="file listing albums to skip", default=DEFAULTS.get('skip_albums'))
 
     return parser.parse_args()
 

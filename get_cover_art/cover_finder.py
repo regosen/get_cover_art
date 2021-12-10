@@ -16,6 +16,7 @@ DEFAULTS = {
     "external_art_mode": "none",
     "external_art_filename": ['cover.jpg', '_albumcover.jpg', 'folder.jpg'],
     "art_dest_filename": "{artist} - {album}.jpg",
+    "throttle": 3,
 }
 
 # utility class to cache a set of values
@@ -71,7 +72,7 @@ class CoverFinder(object):
         self.external_art_mode = options.get('external_art_mode', None)
         self.external_art_filename = options.get('external_art_filename', None)
         if not options.get('no_download'):
-            self.downloader = AppleDownloader(self.verbose)
+            self.downloader = AppleDownloader(self.verbose, float(options.get('throttle') or DEFAULTS.get('throttle')))
         if not options.get('art_dest_inline'):
             self.art_folder_override = options.get('art_dest')
             if self.art_folder_override:
