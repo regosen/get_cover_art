@@ -21,21 +21,24 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - Ogg Vorbis
 - Opus
 
-## Requirements
+## Setup
+
+### Requirements
 - Python 3.5 or greater
 - Python packages: [mutagen](https://pypi.org/project/mutagen/)
   - automatically installed if you use `pip install` below
 
-### Installation on MacOS using Homebrew
+### Installation
+
+You can download this repository from GitHub, or grab it from [PyPI](https://pypi.org/project/get-cover-art/) using pip:
 
 ```
-brew install python
-python -m pip install mutagen
-python -m pip install get_cover_art
+$ pip install get_cover_art
 ```
-And then to upgrade existing installations:
+
+To upgrade existing installations:
 ```
-python -m pip install --upgrade get_cover_art
+$ pip install --upgrade get_cover_art
 ```
 
 ## Usage
@@ -82,7 +85,7 @@ if you omit `path`, it will scan the current working directory
 _Pro Tip:_ You can run with `--test` first, then browse/prune the downloaded artwork, then run again with `--no-download` to embed only the artwork you didn't prune.
 
 ### From the Python Environment
-```
+```python
 from get_cover_art import CoverFinder
 
 finder = CoverFinder(OPTIONS)

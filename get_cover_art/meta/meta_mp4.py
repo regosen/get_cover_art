@@ -14,7 +14,7 @@ class MetaMP4(MetaAudio):
                 self.artist = self.audio.tags['©ART'][0]
             self.album = self.audio.tags['©alb'][0]
             self.title = self.audio.tags['©nam'][0]
-        except:
+        except Exception:
             raise Exception("missing XMP tags")
     
     def has_embedded_art(self):

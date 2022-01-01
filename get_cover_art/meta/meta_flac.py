@@ -13,7 +13,7 @@ class MetaFLAC(MetaAudio):
                 self.artist = self.audio['artist'][0]
             self.album = self.audio['album'][0]
             self.title = self.audio['title'][0]
-        except:
+        except Exception:
             raise Exception("missing FLAC tags")
     
     def has_embedded_art(self):

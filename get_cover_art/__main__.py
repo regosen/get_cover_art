@@ -45,9 +45,9 @@ def main():
     num_processed = len(finder.files_processed)
     num_skipped = len(finder.files_skipped)
     num_failed = len(finder.files_failed)
-    print("Done!  Processed: %d, Skipped: %d, Failed: %d" % (num_processed, num_skipped, num_failed))
+    print(f"Done!  Processed: {num_processed}, Skipped: {num_skipped}, Failed: {num_failed}")
     if finder.art_folder_override:
-        print("Artwork folder: " + finder.art_folder_override)
+        print(f"Artwork folder: {finder.art_folder_override}")
     else:
         print("Artwork files are alongside audio files.")
     print()

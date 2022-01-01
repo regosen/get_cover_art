@@ -26,9 +26,8 @@ class ValueStore(object):
         self.delim = "\n"
 
         if os.path.isfile(self.filename):
-            file = open(self.filename)
-            contents = file.read()
-            file.close()
+            with open(self.filename) as file:
+                contents = file.read()
             self.keys = set(contents.split(self.delim))
         else:
             self.keys = set([])
@@ -47,10 +46,8 @@ class ValueStore(object):
 
     def _update(self):
         if os.path.isfile(self.filename):
-            file = open(self.filename, 'w')
-            file.write(self.delim.join(sorted(self.keys)))
-            file.close()
-
+            with open(self.filename, 'w') as file:
+                file.write(self.delim.join(sorted(self.keys)))
 
 class CoverFinder(object):
     def __init__(self, options={}):
@@ -88,16 +85,16 @@ class CoverFinder(object):
         if self.force:
             return False
         if self.ignore_artists.has(meta.artist):
-            if verbose: print("Skipping ignored artist (%s) for %s" % (meta.artist, art_path))
+            if verbose: print(f"Skipping ignored artist ({meta.artist}) for {art_path}")
             return True
         if self.ignore_albums.has(meta.album):
-            if verbose: print("Skipping ignored album (%s) for %s" % (meta.album, art_path))
+            if verbose: print(f"Skipping ignored album ({meta.album}) for {art_path}")
             return True
         if meta.has_embedded_art() and not self.clear:
-            if verbose: print("Skipping existing embedded artwork for %s" % (art_path))
+            if verbose: print(f"Skipping existing embedded artwork for {art_path}")
             return True
         if self.ignore_artwork.has(art_path):
-            if verbose: print("Skipping ignored art path %s" % (art_path))
+            if verbose: print(f"Skipping ignored art path {art_path}")
             return True
         return False
             
@@ -126,7 +123,7 @@ class CoverFinder(object):
         if self.force or not os.path.exists(art_path):
             return self.downloader.download(meta, art_path)
         elif self.verbose:
-            print('Skipping existing download for ' + art_path)
+            print(f"Skipping existing download for {art_path}")
         
         return True
     
@@ -206,11 +203,11 @@ class CoverFinder(object):
                     self.files_skipped.append(path)
 
         except Exception as e:
-            print("ERROR: failed to process %s, %s: %s" % (path, type(e).__name__, str(e)))
+            print(f"ERROR: failed to process {path}, {type(e).__name__}: {str(e)}")
             self.files_failed.append(path)
             
     def scan_folder(self, folder="."):
-        if self.verbose: print("Scanning folder: " + folder)
+        if self.verbose: print(f"Scanning folder: {folder}")
         for root, dirs, files in os.walk(folder):
             for f in files:
                 path = os.path.join(root, f)

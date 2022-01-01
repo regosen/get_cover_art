@@ -29,7 +29,7 @@ class ArtistNormalizer(Normalizer):
         # e.g. "Beatles, The" -> "The Beatles", "Bowie, David" -> "David Bowie"
         (last, _sep, first) = artist.partition(',')
         if first:
-            artist = '%s %s' % (first.strip(), last.strip())
+            artist = f"{first.strip()} {last.strip()}"
         return super().normalize(artist)
 
 

@@ -27,7 +27,7 @@ class AppleDownloader(object):
                 if e.code in THROTTLED_HTTP_CODES:
                     # we've been throttled, time to sleep
                     domain = urlparse(url).netloc
-                    print("WARNING: Request limit exceeded from %s, trying again in %d seconds..." % (domain, self.throttle))
+                    print(f"WARNING: Request limit exceeded from {domain}, trying again in {self.throttle} seconds...")
                     time.sleep(self.throttle)
                 else:
                     raise e
@@ -37,21 +37,20 @@ class AppleDownloader(object):
             return self._urlopen_safe(url).decode("utf8")
         except Exception as error:
             if ("certificate verify failed" in str(error)):
-                print("ERROR: Python doesn't have SSL certificates installed, can't access " + url)
+                print(f"ERROR: Python doesn't have SSL certificates installed, can't access {url}")
                 print("Please run 'Install Certificates.command' from your Python installation directory.")
             else:
-                print("ERROR: reading URL (%s): %s" % (url, str(error)))
+                print(f"ERROR: reading URL ({url}): {str(error)})")
             return ""
 
     def _download_from_url(self, image_url, dest_path):
         image_data = self._urlopen_safe(image_url)
-        output = open(dest_path,'wb')
-        output.write(image_data)
-        output.close()
-        print("Downloaded cover art: "  + dest_path)
+        with open(dest_path,'wb') as file:
+            file.write(image_data)
+        print(f"Downloaded cover art: {dest_path}")
 
     def _query(self, artist, album):
-        query_term = "%s %s" % (artist, album)
+        query_term = f"{artist} {album}"
         if album in artist:
             query_term = artist
         elif artist in album:
@@ -61,7 +60,7 @@ class AppleDownloader(object):
         if json:
             try:
                 return eval(json)
-            except:
+            except Exception:
                 pass
         return {}
 
@@ -98,9 +97,9 @@ class AppleDownloader(object):
                     self._download_from_url(art, art_path)
                     return True
             except Exception as error:
-                print("ERROR encountered when downloading for artist (%s) and album (%s)" % (meta_artist, meta_album))
+                print("ERROR encountered when downloading for artist ({meta_artist}) and album ({meta_album})")
                 print(error)
 
         if self.verbose:
-            print("Failed to find matching artist (%s) and album (%s)" % (meta_artist, meta_album))
+            print("Failed to find matching artist ({meta_artist}) and album ({meta_album})")
         return False
