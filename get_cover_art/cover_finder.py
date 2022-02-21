@@ -163,6 +163,7 @@ class CoverFinder(object):
                     return
 
                 success = True
+                file_changed = False
                 # Logic:
                 # If external_art_mode is "before" we want to avoid network 
                 # traffic if possible and use the local file. If 
@@ -188,12 +189,15 @@ class CoverFinder(object):
                     success = bool(local_art)
                     art_path = local_art
 
-                file_changed = self.clear and meta.clear() # do this regardless of finding art
+                if self.clear:
+                    file_changed = meta.clear() # do this regardless of finding art
                 
                 if self.embed:
-                    success = success and meta.embed(art_path)
+                    embedded = meta.embed(art_path)
+                    file_changed = file_changed or embedded
+                    success = success and embedded
                 
-                if success or file_changed:
+                if file_changed:
                     meta.save()
 
                 if success:
