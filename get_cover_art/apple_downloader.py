@@ -97,9 +97,9 @@ class AppleDownloader(object):
                     self._download_from_url(art, art_path)
                     return True
             except Exception as error:
-                print("ERROR encountered when downloading for artist ({meta_artist}) and album ({meta_album})")
+                print(f"ERROR encountered when downloading for artist ({meta_artist}) and album ({meta_album})")
                 print(error)
 
         if self.verbose:
-            print("Failed to find matching artist ({meta_artist}) and album ({meta_album})")
+            print(f"Failed to find matching artist ({meta_artist}) and album ({meta_album})")
         return False
