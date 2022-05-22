@@ -9,7 +9,8 @@ USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 THROTTLED_HTTP_CODES = [403, 429]
 
 class AppleDownloader(object):
-    def __init__(self, verbose, throttle):
+    def __init__(self, verbose, throttle, art_size):
+        self.size_suffix = f"{art_size}x{art_size}bb"
         self.verbose = verbose
         self.throttle = throttle
         self.artist_normalizer = ArtistNormalizer()
@@ -90,7 +91,7 @@ class AppleDownloader(object):
                     if not meta_album in album:
                         continue
                     
-                    art = album_info['artworkUrl100'].replace('100x100bb','500x500bb')
+                    art = album_info['artworkUrl100'].replace('100x100bb', self.size_suffix)
                     if meta_album == album:
                         break # exact match found
                 if art:

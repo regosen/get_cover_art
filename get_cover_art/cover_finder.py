@@ -9,6 +9,7 @@ from .meta.meta_opus import MetaOpus
 from .meta.meta_vorbis import MetaVorbis
 
 DEFAULTS = {
+    "art_size": "500",
     "cover_art": "_cover_art",
     "skip_artists": "./skip_artists.txt",
     "skip_albums": "./skip_albums.txt",
@@ -52,6 +53,7 @@ class ValueStore(object):
 class CoverFinder(object):
     def __init__(self, options={}):
         options = {k.replace('-', '_'): v for k, v in options.items()}
+        self.art_size = options.get('art_size', DEFAULTS.get('art_size'))
         self.ignore_artists = ValueStore(options.get('skip_artists', DEFAULTS.get('skip_artists')))
         self.ignore_albums = ValueStore(options.get('skip_albums', DEFAULTS.get('skip_albums')))
         self.ignore_artwork = ValueStore(options.get('skip_artwork', DEFAULTS.get('skip_artwork')))
@@ -70,7 +72,8 @@ class CoverFinder(object):
         self.external_art_mode = options.get('external_art_mode', None)
         self.external_art_filename = options.get('external_art_filename', None)
         if not options.get('no_download'):
-            self.downloader = AppleDownloader(self.verbose, float(options.get('throttle') or DEFAULTS.get('throttle')))
+            throttle = float(options.get('throttle') or DEFAULTS.get('throttle'))
+            self.downloader = AppleDownloader(self.verbose, throttle, self.art_size)
         if not options.get('art_dest_inline'):
             self.art_folder_override = options.get('art_dest')
             if self.art_folder_override:

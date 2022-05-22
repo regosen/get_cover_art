@@ -50,6 +50,7 @@ $ pip install --upgrade get_cover_art
   --path PATH           audio file, or folder of audio files (recursive)
 
 artwork options:
+  --art-size ART_SIZE   square dimensions of artwork (e.g. 500)
   --art-dest DEST       set artwork destination folder
   --art-dest-inline     set artwork destination folder to same folders as audio files
   --art-dest-filename ART_DEST_FILENAME
