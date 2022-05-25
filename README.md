@@ -68,7 +68,7 @@ behavior options:
   --test, --no-embed    scan and download only, don't embed artwork
   --no-download         embed only previously-downloaded artwork
   --clear               clear artwork from audio file (regardless of finding art)
-  --force               overwrite existing artwork
+  --force               process files regardless of existing artwork
   --verbose             print verbose logging
   --no-skip             don't skip previously-scanned files
   --throttle THROTTLE   number of seconds to wait if request is rejected

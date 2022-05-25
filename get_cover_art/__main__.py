@@ -7,12 +7,24 @@ from .cover_finder import CoverFinder, DEFAULTS
 # By default it will scan from the current working directory, you can override this
 # with commandline parameters or arguments passed into scan_folder()
 
+def check_art_size(value):
+    ivalue = int(value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("art-size must be a positive integer")
+    return ivalue
+
+def check_throttle(value):
+    fvalue = float(value)
+    if fvalue < 0:
+        raise argparse.ArgumentTypeError("throtte cannot be negative")
+    return fvalue
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', help="audio file, or folder of audio files (recursive)", default=".")
 
     parser_art = parser.add_argument_group('artwork options')
-    parser_art.add_argument('--art-size', help="square dimensions of artwork (e.g. 500)", default=DEFAULTS.get('art_size'))
+    parser_art.add_argument('--art-size', type=check_art_size, help="square dimensions of artwork (e.g. 500)", default=DEFAULTS.get('art_size'))
     parser_art.add_argument('--art-dest', '--dest', help="set artwork destination folder", default=DEFAULTS.get('cover_art'))
     parser_art.add_argument('--art-dest-inline', '--inline', help="put artwork in same folders as audio files", action='store_true')
     parser_art.add_argument('--art-dest-filename', default=DEFAULTS.get('art_dest_filename'), help="set artwork destination filename format. Accepts {artist}, {album}, and {title}. Default '{artist} - {album}.jpg")
@@ -26,7 +38,7 @@ def get_args():
     parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
     parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')
     parser_behavior.add_argument('--no-skip', '--no_skip', help="don't skip previously-scanned files", action='store_true')
-    parser_behavior.add_argument('--throttle', help="number of seconds to wait ", default=0)
+    parser_behavior.add_argument('--throttle', type=check_throttle, help="number of seconds to wait", default=0)
 
     parser_filters = parser.add_argument_group('filter options')
     parser_filters.add_argument('--skip-artwork', '--skip_artwork', help="(maintained between runs) file listing destination art files to skip", default=DEFAULTS.get('skip_artwork'))
