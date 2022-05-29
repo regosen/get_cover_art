@@ -62,7 +62,9 @@ artwork options:
   --external-art-filename EXTERNAL_ART_FILENAME [EXTERNAL_ART_FILENAME ...]
                         Filename(s) of folder art to use. Accepts {artist},
                         {album}, and {title} for replacement: e.g. cover.jpg
-                        or {album}-{artist}.jpg
+                        or {album}-{artist}.jpg ; this does not affect the filename
+                        for art that must be fetched (use --art-dest-filename for
+                        that).
 
 behavior options:
   --test, --no-embed    scan and download only, don't embed artwork
