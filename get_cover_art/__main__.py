@@ -13,6 +13,12 @@ def check_art_size(value):
         raise argparse.ArgumentTypeError("art-size must be a positive integer")
     return ivalue
 
+def check_art_quality(value):
+    ivalue = int(value)
+    if ivalue < 0 or ivalue > 100:
+        raise argparse.ArgumentTypeError("art-quality must be between 1 and 100")
+    return ivalue
+
 def check_throttle(value):
     fvalue = float(value)
     if fvalue < 0:
@@ -24,7 +30,8 @@ def get_args():
     parser.add_argument('--path', help="audio file, or folder of audio files (recursive)", default=".")
 
     parser_art = parser.add_argument_group('artwork options')
-    parser_art.add_argument('--art-size', type=check_art_size, help="square dimensions of artwork (e.g. 500)", default=DEFAULTS.get('art_size'))
+    parser_art.add_argument('--art-size', type=check_art_size, help="square dimensions of artwork (default: 500)", default=DEFAULTS.get('art_size'))
+    parser_art.add_argument('--art-quality', type=check_art_quality, help="jpeg compression quality (1-100, default: auto)", default=DEFAULTS.get('art_quality'))
     parser_art.add_argument('--art-dest', '--dest', help="set artwork destination folder", default=DEFAULTS.get('cover_art'))
     parser_art.add_argument('--art-dest-inline', '--inline', help="put artwork in same folders as audio files", action='store_true')
     parser_art.add_argument('--art-dest-filename', default=DEFAULTS.get('art_dest_filename'), help="set artwork destination filename format. Accepts {artist}, {album}, and {title}. Default '{artist} - {album}.jpg")
