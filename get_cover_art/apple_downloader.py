@@ -10,7 +10,7 @@ THROTTLED_HTTP_CODES = [403, 429]
 
 class AppleDownloader(object):
     def __init__(self, verbose, throttle, art_size):
-        self.size_suffix = f"{art_size}x{art_size}bb"
+        self.size_suffix = f"{art_size}x{art_size}-100"
         self.verbose = verbose
         self.throttle = throttle
         self.artist_normalizer = ArtistNormalizer()
