@@ -5,6 +5,7 @@ from .apple_downloader import AppleDownloader
 from .meta.meta_mp3 import MetaMP3
 from .meta.meta_mp4 import MetaMP4
 from .meta.meta_flac import MetaFLAC
+from .meta.meta_dsf import MetaDSF
 from .meta.meta_opus import MetaOpus
 from .meta.meta_vorbis import MetaVorbis
 
@@ -152,6 +153,8 @@ class CoverFinder(object):
                 meta = MetaMP4(path)
             elif ext == '.flac':
                 meta = MetaFLAC(path)
+            elif ext == '.dsf':
+                meta = MetaDSF(path)
             elif ext == '.opus':
                 meta = MetaOpus(path)
             elif ext == '.ogg':

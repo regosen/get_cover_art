@@ -18,6 +18,7 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - MP3
 - MP4 (.m4a)
 - FLAC
+- DSF
 - Ogg Vorbis
 - Opus
 
