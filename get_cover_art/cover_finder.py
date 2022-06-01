@@ -218,6 +218,6 @@ class CoverFinder(object):
     def scan_folder(self, folder="."):
         if self.verbose: print(f"Scanning folder: {folder}")
         for root, dirs, files in os.walk(folder):
-            for f in files:
+            for f in sorted(files):
                 path = os.path.join(root, f)
                 self.scan_file(path)
