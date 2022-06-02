@@ -141,28 +141,27 @@ class CoverFinder(object):
                 return filename
         return None
 
+    def _get_meta(self, path):
+        _base, ext = os.path.splitext(path.lower())
+        if ext == '.mp3':
+            return MetaMP3(path)
+        if ext == '.m4a':
+            return MetaMP4(path)
+        if ext == '.flac':
+            return MetaFLAC(path)
+        if ext == '.dsf':
+            return MetaDSF(path)
+        if ext == '.opus':
+            return MetaOpus(path)
+        if ext == '.ogg':
+            return MetaVorbis(path)
+        self.files_invalid.append(path)
+        return None
+
     def scan_file(self, path):
-        folder, filename = os.path.split(path)
-        base, ext = os.path.splitext(filename.lower())
-        art_folder = self.art_folder_override or folder
+        art_folder = self.art_folder_override or os.path.split(path)[0]
         try:
-            meta = None
-            if ext == '.mp3':
-                meta = MetaMP3(path)
-            elif ext == '.m4a':
-                meta = MetaMP4(path)
-            elif ext == '.flac':
-                meta = MetaFLAC(path)
-            elif ext == '.dsf':
-                meta = MetaDSF(path)
-            elif ext == '.opus':
-                meta = MetaOpus(path)
-            elif ext == '.ogg':
-                meta = MetaVorbis(path)
-            else:
-                self.files_invalid.append(path)
-                return
-            
+            meta = self._get_meta(path)
             if meta:
                 filename = self._slugify(self.art_dest_filename.format(artist=meta.artist, album=meta.album, title=meta.title))
                 art_path = os.path.join(art_folder, filename)
@@ -181,7 +180,7 @@ class CoverFinder(object):
                 # First, check if there is a local file (local_art will
                 # be None if not).
                 if self.external_art_mode in ("before", "after"):
-                    local_art = self._find_folder_art(meta, folder)
+                    local_art = self._find_folder_art(meta, art_folder)
 
                 # Avoid downloading if it exists and we are in "before" mode
                 if self.downloader and (not self.external_art_mode=="before" or not local_art):

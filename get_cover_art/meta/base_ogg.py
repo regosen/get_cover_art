@@ -8,9 +8,9 @@ import base64
 ART_TAG = 'metadata_block_picture'
 
 class MetaOgg(MetaAudio):
-    def __init__(self, path):
+    def __init__(self, path, audio):
         self.audio_path = path
-        self.audio = self.fileparser(path)
+        self.audio = audio
         try:
             if 'albumartist' in self.audio:
                 # use Album Artist first

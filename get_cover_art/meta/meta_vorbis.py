@@ -3,5 +3,4 @@ from .base_ogg import MetaOgg
 
 class MetaVorbis(MetaOgg):
     def __init__(self, path):
-        self.fileparser = OggVorbis
-        return MetaOgg.__init__(self, path)
+        return MetaOgg.__init__(self, path, OggVorbis(path))
