@@ -2,12 +2,7 @@ import os, unicodedata, re
 from pathlib import Path
 
 from .apple_downloader import AppleDownloader
-from .meta.meta_mp3 import MetaMP3
-from .meta.meta_mp4 import MetaMP4
-from .meta.meta_flac import MetaFLAC
-from .meta.meta_dsf import MetaDSF
-from .meta.meta_opus import MetaOpus
-from .meta.meta_vorbis import MetaVorbis
+from .meta import get_meta
 
 DEFAULTS = {
     "art_size": "500",
@@ -141,27 +136,10 @@ class CoverFinder(object):
                 return filename
         return None
 
-    def _get_meta(self, path):
-        _base, ext = os.path.splitext(path.lower())
-        if ext == '.mp3':
-            return MetaMP3(path)
-        if ext == '.m4a':
-            return MetaMP4(path)
-        if ext == '.flac':
-            return MetaFLAC(path)
-        if ext == '.dsf':
-            return MetaDSF(path)
-        if ext == '.opus':
-            return MetaOpus(path)
-        if ext == '.ogg':
-            return MetaVorbis(path)
-        self.files_invalid.append(path)
-        return None
-
     def scan_file(self, path):
         art_folder = self.art_folder_override or os.path.split(path)[0]
         try:
-            meta = self._get_meta(path)
+            meta = get_meta(path)
             if meta:
                 filename = self._slugify(self.art_dest_filename.format(artist=meta.artist, album=meta.album, title=meta.title))
                 art_path = os.path.join(art_folder, filename)
@@ -212,6 +190,8 @@ class CoverFinder(object):
                 else:
                     self.ignore_artwork.add(art_path)
                     self.files_skipped.append(path)
+            else:
+                self.files_invalid.append(path)
 
         except Exception as e:
             print(f"ERROR: failed to process {path}, {type(e).__name__}: {str(e)}")
