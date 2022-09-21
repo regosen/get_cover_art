@@ -156,6 +156,11 @@ class CoverFinder(object):
                 art_path = os.path.join(art_folder, filename)
                 if self._should_skip(meta, art_path, self.verbose):
                     self.files_skipped.append(path)
+                    if self.cleanup:
+                        if allow_cleanup:
+                            self._cleanup([art_path])
+                        else:
+                            self.files_to_delete.add(art_path)
                     return
 
                 success = True
@@ -195,7 +200,7 @@ class CoverFinder(object):
                     success = success and embedded
                 
                 # don't delete pre-existing local_art, only downloaded artwork
-                if self.cleanup and art_path != local_art and os.path.exists(art_path):
+                if self.cleanup and art_path != local_art:
                     if allow_cleanup:
                         self._cleanup([art_path])
                     else:
