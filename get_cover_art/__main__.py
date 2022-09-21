@@ -41,6 +41,7 @@ def get_args():
     parser_behavior = parser.add_argument_group('behavior options')
     parser_behavior.add_argument('--test', '--no-embed', '--no_embed', help="scan and download only, don't embed artwork", action='store_true')
     parser_behavior.add_argument('--clear', help="clear artwork from audio file (regardless of finding art)", action='store_true')
+    parser_behavior.add_argument('--cleanup', help="remove downloaded artwork files afterward", action='store_true')
     parser_behavior.add_argument('--no-download', '--no_download', help="embed only previously-downloaded artwork", action='store_true')
     parser_behavior.add_argument('--force', help="overwrite existing artwork", action='store_true')
     parser_behavior.add_argument('--verbose', help="print verbose logging", action='store_true')
@@ -66,10 +67,11 @@ def main():
     num_skipped = len(finder.files_skipped)
     num_failed = len(finder.files_failed)
     print(f"Done!  Processed: {num_processed}, Skipped: {num_skipped}, Failed: {num_failed}")
-    if finder.art_folder_override:
-        print(f"Artwork folder: {finder.art_folder_override}")
-    else:
-        print("Artwork files are alongside audio files.")
+    if not args.cleanup:
+        if finder.art_folder_override:
+            print(f"Artwork folder: {finder.art_folder_override}")
+        else:
+            print("Artwork files are alongside audio files.")
     print()
 
 if __name__ == '__main__':

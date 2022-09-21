@@ -79,8 +79,10 @@ class CoverFinder(object):
                 Path(self.art_folder_override).mkdir(parents=True, exist_ok=True)
 
         self.clear = options.get('clear')
+        self.cleanup = options.get('cleanup')
         self.embed = not (options.get('no_embed') or options.get('test'))
         self.force = options.get('force')
+        self.files_to_delete = set([])
 
     def _should_skip(self, meta, art_path, verbose):
         if self.force:
@@ -112,12 +114,9 @@ class CoverFinder(object):
             value, ext = os.path.splitext(value)
         else:
             ext = ""
-
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
         value = re.sub('[^\w\s-]', '', bytes.decode(value)).strip()
-
         value += ext
-        
         return value
     
     def _download(self, meta, art_path):
@@ -125,7 +124,6 @@ class CoverFinder(object):
             return self.downloader.download(meta, art_path)
         elif self.verbose:
             print(f"Skipping existing download for {art_path}")
-        
         return True
     
     def _find_folder_art(self, meta, folder):
@@ -136,7 +134,20 @@ class CoverFinder(object):
                 return filename
         return None
 
-    def scan_file(self, path):
+    def _cleanup(self, files):
+        if files:
+            print(f"Cleaning up downloaded artwork")
+            folders = set([os.path.dirname(file) for file in files])
+            for file in files:
+                if os.path.exists(file):
+                    os.remove(file)
+                    if self.verbose: print(f"Deleted file: {file}")
+            for folder in folders:
+                if not os.listdir(folder):
+                    os.removedirs(folder)
+                    if self.verbose: print(f"Deleted folder: {folder}")
+
+    def scan_file(self, path, allow_cleanup = True):
         art_folder = self.art_folder_override or os.path.split(path)[0]
         try:
             meta = get_meta(path)
@@ -149,6 +160,7 @@ class CoverFinder(object):
 
                 success = True
                 file_changed = False
+                local_art = ""
                 # Logic:
                 # If external_art_mode is "before" we want to avoid network 
                 # traffic if possible and use the local file. If 
@@ -182,6 +194,13 @@ class CoverFinder(object):
                     file_changed = file_changed or embedded
                     success = success and embedded
                 
+                # don't delete pre-existing local_art, only downloaded artwork
+                if self.cleanup and art_path != local_art and os.path.exists(art_path):
+                    if allow_cleanup:
+                        self._cleanup([art_path])
+                    else:
+                        self.files_to_delete.add(art_path)
+
                 if file_changed:
                     meta.save()
 
@@ -198,8 +217,10 @@ class CoverFinder(object):
             self.files_failed.append(path)
             
     def scan_folder(self, folder="."):
+        self.files_to_delete = set([])
         if self.verbose: print(f"Scanning folder: {folder}")
         for root, dirs, files in os.walk(folder):
             for f in sorted(files):
                 path = os.path.join(root, f)
-                self.scan_file(path)
+                self.scan_file(path, False)
+        self._cleanup(self.files_to_delete)
