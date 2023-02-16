@@ -13,7 +13,7 @@ import setuptools
 
 setuptools.setup(
     name = 'get_cover_art',
-    version = '1.6.3',
+    version = '1.7.0',
     python_requires = '>=3.5',
     author = 'Rego Sen',
     author_email = 'regosen@gmail.com',
@@ -22,7 +22,7 @@ setuptools.setup(
     long_description = open('README.md', 'r').read(),
     long_description_content_type = 'text/markdown',
     license = 'MIT',
-    keywords = 'cover album art artwork embed itunes apple music mp3 id3 m4a mp4 aac xmp flac dsf ogg vorbis opus songs',
+    keywords = 'cover album art artwork embed itunes apple music mp3 id3 m4a m4b mp4 aac xmp flac dsf ogg vorbis opus songs',
     packages = setuptools.find_packages(),
     install_requires = [
         'mutagen',

@@ -8,6 +8,7 @@ from .meta_vorbis import MetaVorbis
 EXT_TO_CONSTRUCTOR = {
   'mp3': MetaMP3,
   'm4a': MetaMP4,
+  'm4b': MetaMP4,
   'flac': MetaFLAC,
   'dsf': MetaDSF,
   'opus': MetaOpus,

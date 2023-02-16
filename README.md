@@ -16,7 +16,7 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 
 ## Supported formats (so far)
 - MP3
-- MP4 (.m4a)
+- MP4 (.m4a, .m4b)
 - FLAC
 - DSF
 - Ogg Vorbis
