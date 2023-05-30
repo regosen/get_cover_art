@@ -4,6 +4,7 @@ from .meta_flac import MetaFLAC
 from .meta_dsf import MetaDSF
 from .meta_opus import MetaOpus
 from .meta_vorbis import MetaVorbis
+from .meta_wav import MetaWAV
 
 EXT_TO_CONSTRUCTOR = {
   'mp3': MetaMP3,
@@ -13,6 +14,7 @@ EXT_TO_CONSTRUCTOR = {
   'dsf': MetaDSF,
   'opus': MetaOpus,
   'ogg': MetaVorbis,
+  'wav': MetaWAV,
 }
 
 def get_meta(path):

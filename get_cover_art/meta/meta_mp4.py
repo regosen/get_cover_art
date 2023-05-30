@@ -3,18 +3,17 @@ from mutagen.mp4 import MP4
 from mutagen.m4a import M4ACover
 
 class MetaMP4(MetaAudio):
+    def _get_tag(self, tag):
+        return self.audio.tags[tag][0] if tag in self.audio.tags else ""
+    
     def __init__(self, path):
         self.audio_path = path
         self.audio = MP4(path)
-        try:
-            if 'aART' in self.audio.tags:
-                # use Album Artist first
-                self.artist = self.audio.tags['aART'][0]
-            else:
-                self.artist = self.audio.tags['©ART'][0]
-            self.album = self.audio.tags['©alb'][0]
-            self.title = self.audio.tags['©nam'][0]
-        except Exception:
+        # prefer Album Artist
+        self.artist = self._get_tag('aART') or self._get_tag('©ART') 
+        self.album = self._get_tag('©alb')
+        self.title = self._get_tag('©nam')
+        if self.artist == "" or self.title == "":
             raise Exception("missing XMP tags")
     
     def has_embedded_art(self):

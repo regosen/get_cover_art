@@ -4,7 +4,7 @@ from urllib.parse import urlparse, quote
 from .normalizer import ArtistNormalizer, AlbumNormalizer
 from .deromanizer import DeRomanizer
 
-QUERY_TEMPLATE = "https://itunes.apple.com/search?term=%s&media=music&entity=album"
+QUERY_TEMPLATE = "https://itunes.apple.com/search?term=%s&media=music&entity=%s"
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36"
 THROTTLED_HTTP_CODES = [403, 429]
 
@@ -53,17 +53,20 @@ class AppleDownloader(object):
             file.write(image_data)
         print(f"Downloaded cover art: {dest_path}")
 
-    def _query(self, artist, album):
-        query_term = f"{artist} {album}"
-        if album in artist:
+    def _query(self, artist, album, title):
+        token = album or title
+        entity = "album" if album else "musicTrack"
+        query_term = f"{artist} {token}"
+        if token in artist:
             query_term = artist
-        elif artist in album:
-            query_term = album
-        url = QUERY_TEMPLATE % quote(query_term)
+        elif artist in token:
+            query_term = token
+        url = QUERY_TEMPLATE % (quote(query_term), entity)
         json = self._urlopen_text(url)
         if json:
             try:
-                return eval(json)
+                safe_json = json.replace('true', 'True').replace('false', 'False')
+                return eval(safe_json)
             except Exception:
                 pass
         return {}
@@ -71,31 +74,36 @@ class AppleDownloader(object):
     def _get_data(self, meta):
         artist = self.artist_normalizer.normalize(meta.artist)
         album = self.album_normalizer.normalize(meta.album)
-        info = self._query(artist, album)
-        if not info or not info['resultCount']:
+        title = self.album_normalizer.normalize(meta.title)
+        info = self._query(artist, album, title)
+        if not info or not info.get('resultCount'):
             # no result found, try replacing any roman numerals
             artist = self.deromanizer.convert_all(artist)
             album = self.deromanizer.convert_all(album)
-            info = self._query(artist, album)
-        return (artist, album, info)
+            info = self._query(artist, album, title)
+        return (artist, album, info, len(album) == 0)
 
     def download(self, meta, art_path):
-        (meta_artist, meta_album, info) = self._get_data(meta)
+        (meta_artist, meta_album, info, title_only) = self._get_data(meta)
         if info:
             try:
                 art = ""
                 # go through albums, use exact match or first contains match if no exacts found
-                for album_info in reversed(info['results']):
-                    artist = self.artist_normalizer.normalize(album_info['artistName'])
-                    album = self.album_normalizer.normalize(album_info['collectionName'])
+                results = reversed(info.get('results'))
+                if title_only:
+                    # if no album name provided, use earliest matching release
+                    results = reversed(sorted(results, key=lambda x: x.get('releaseDate')))
+                for album_info in results:
+                    artist = self.artist_normalizer.normalize(album_info.get('artistName'))
+                    album = self.album_normalizer.normalize(album_info.get('collectionName'))
                     
                     if not meta_artist in artist:
                         continue
-                    if not meta_album in album:
+                    if not title_only and not meta_album in album:
                         continue
                     
-                    art = album_info['artworkUrl100'].replace('100x100bb', self.file_suffix)
-                    if meta_album == album:
+                    art = album_info.get('artworkUrl100').replace('100x100bb', self.file_suffix)
+                    if not title_only and meta_album == album:
                         break # exact match found
                 if art:
                     self._download_from_url(art, art_path)

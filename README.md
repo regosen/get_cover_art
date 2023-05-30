@@ -21,6 +21,9 @@ It uses Apple Music's artwork, which is already standardized and high-quality.  
 - DSF
 - Ogg Vorbis
 - Opus
+- WAV*
+
+(* NOTE: Apple Music and other players may not recognize ID3 tags on WAV files.)
 
 ## Setup
 
@@ -57,8 +60,9 @@ artwork options:
   --art-dest DEST       set artwork destination folder
   --art-dest-inline     set artwork destination folder to same folders as audio files
   --art-dest-filename ART_DEST_FILENAME
-                        set artwork destination filename format. Accepts {artist},
-                        {album}, and {title}. Default '{artist} - {album}.jpg'
+                        set artwork destination filename format. Accepts
+                        {artist}, {album}, {album_or_title}, {filename}, and
+                        {title}. Default is '{artist} - {album_or_title}.jpg'
   --external-art-mode {before,after,none}
                         Use images from local disk: "before" prevents
                         downloads, "after" downloads as a fallback. Default is none.
@@ -141,9 +145,11 @@ filenames such as "The Beatles-Abbey Road-cover.jpg".
 The "--art-dest-filename" option allows you to specify the filename used to
 store downloaded files, for interoperability with other systems. You __must__
 be careful to avoid collisions between different albums: The default is
-"{artist} - {album}.jpg". If you know that all of the albums you're running
+"{artist} - {album_or_title}.jpg". If you know that all of the albums you're running
 against have their own directories _and_ you are using "--art-dest-inline", then you
-could use something more generic (such as "cover.jpg").
+could use something more generic (such as "cover.jpg").  A note about the format:
+- {album_or_title} falls back on the title tag if the album tag is blank
+- {filename} uses the filename of the source audio file (minus the extension)
 
 _Pro Tip:_ If you have a cover.jpg in each album directory, you can use:
 "--external-art-mode before --external-art-filename cover.jpg --art-dest-inline"

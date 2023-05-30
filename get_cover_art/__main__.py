@@ -34,7 +34,7 @@ def get_args():
     parser_art.add_argument('--art-quality', type=check_art_quality, help="jpeg compression quality (1-100, default: auto)", default=DEFAULTS.get('art_quality'))
     parser_art.add_argument('--art-dest', '--dest', help="set artwork destination folder", default=DEFAULTS.get('cover_art'))
     parser_art.add_argument('--art-dest-inline', '--inline', help="put artwork in same folders as audio files", action='store_true')
-    parser_art.add_argument('--art-dest-filename', default=DEFAULTS.get('art_dest_filename'), help="set artwork destination filename format. Accepts {artist}, {album}, and {title}. Default '{artist} - {album}.jpg")
+    parser_art.add_argument('--art-dest-filename', default=DEFAULTS.get('art_dest_filename'), help="set artwork destination filename format. Accepts {artist}, {album}, {album_or_title}, {filename}, and {title}. Default is '{artist} - {album_or_title}.jpg'")
     parser_art.add_argument('--external-art-mode', choices=['before', 'after', 'none'], default=DEFAULTS.get('external_art_mode'), help='Use image from local folder; "before" prevents downloads, "after" uses as a fallback.  Default is none.')
     parser_art.add_argument('--external-art-filename', default=DEFAULTS.get('external_art_filename'), help="Filename(s) of folder art to use for preexisting external art. Accepts {artist}, {album}, and {title} for replacement: e.g. cover.jpg or {album}-{artist}.jpg ; this does not affect the filename for art that must be fetched (use --art-dest-filename for that).", nargs="+")
 

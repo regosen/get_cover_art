@@ -27,7 +27,7 @@ class ArtistNormalizer(Normalizer):
     def normalize(self, artist):
         # If the artist name has a comma, strip it and swap the string segments.
         # e.g. "Beatles, The" -> "The Beatles", "Bowie, David" -> "David Bowie"
-        (last, _sep, first) = artist.partition(',')
+        (last, _sep, first) = (artist or '').partition(',')
         if first:
             artist = f"{first.strip()} {last.strip()}"
         return super().normalize(artist)
@@ -36,5 +36,5 @@ class ArtistNormalizer(Normalizer):
 class AlbumNormalizer(Normalizer):
     def normalize(self, album):
         # strip "(disc 1)", etc. from album names
-        album = re.sub(r" [\(\[{]disc [\d|I|V|X]+[}\)\]]", "", album, flags=re.IGNORECASE)
+        album = re.sub(r" [\(\[{]disc [\d|I|V|X]+[}\)\]]", "", (album or ''), flags=re.IGNORECASE)
         return super().normalize(album)

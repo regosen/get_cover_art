@@ -2,18 +2,17 @@ from .meta_audio import MetaAudio
 from mutagen.id3 import APIC
 
 class MetaID3(MetaAudio):
+    def _get_tag(self, tag):
+        return self.audio.tags[tag].text[0] if tag in self.audio.tags else ""
+    
     def __init__(self, path, audio):
         self.audio_path = path
         self.audio = audio
-        try:
-            if 'TPE2' in self.audio.tags:
-                # use Album Artist first
-                self.artist = self.audio.tags['TPE2'].text[0]
-            else:
-                self.artist = self.audio.tags['TPE1'].text[0]
-            self.album = self.audio.tags['TALB'].text[0]
-            self.title = self.audio.tags['TIT2'].text[0]
-        except:
+        # prefer Album Artist
+        self.artist = self._get_tag('TPE2') or self._get_tag('TPE1') 
+        self.album = self._get_tag('TALB')
+        self.title = self._get_tag('TIT2')
+        if self.artist == "" or self.title == "":
             raise Exception("missing ID3 tags")
 
     def has_embedded_art(self):

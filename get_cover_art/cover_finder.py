@@ -13,7 +13,7 @@ DEFAULTS = {
     "skip_artwork": "./skip_artwork.txt",
     "external_art_mode": "none",
     "external_art_filename": ['cover.jpg', '_albumcover.jpg', 'folder.jpg'],
-    "art_dest_filename": "{artist} - {album}.jpg",
+    "art_dest_filename": "{artist} - {album_or_title}.jpg",
     "throttle": 3,
 }
 
@@ -152,7 +152,8 @@ class CoverFinder(object):
         try:
             meta = get_meta(path)
             if meta:
-                filename = self._slugify(self.art_dest_filename.format(artist=meta.artist, album=meta.album, title=meta.title))
+                filename_no_ext = os.path.splitext(os.path.basename(path))[0]
+                filename = self._slugify(self.art_dest_filename.format(artist=meta.artist, album=meta.album, title=meta.title, album_or_title=meta.album or meta.title, filename=filename_no_ext))
                 art_path = os.path.join(art_folder, filename)
                 if self._should_skip(meta, art_path, self.verbose):
                     self.files_skipped.append(path)
