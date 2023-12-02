@@ -3,15 +3,16 @@ from .meta_audio import MetaAudio
 # metadata encoder, but the VorbisComment spec (used by OGG formats) 
 # specifies that it uses the FLAC structure, base64-encoded.
 from mutagen.flac import Picture
+from mutagen import FileType
 import base64
 
 ART_TAG = 'metadata_block_picture'
 
 class MetaOgg(MetaAudio):
-    def _get_tag(self, tag):
+    def _get_tag(self, tag: str) -> str:
         return self.audio[tag][0] if tag in self.audio else ""
     
-    def __init__(self, path, audio):
+    def __init__(self, path: str, audio: FileType):
         self.audio_path = path
         self.audio = audio
         # prefer Album Artist
@@ -21,13 +22,13 @@ class MetaOgg(MetaAudio):
         if self.artist == "" or self.title == "":
             raise Exception("missing VorbisComment tags (in ogg vorbis or opus file)")
     
-    def has_embedded_art(self):
+    def has_embedded_art(self) -> bool:
         return bool(self.audio.get(ART_TAG, None))
 
     def detach_art(self):
         self.audio.pop(ART_TAG)
     
-    def embed_art(self, art_path):
+    def embed_art(self, art_path: str):
         pic = Picture()
         with open(art_path, "rb") as f:
             pic.data = f.read()

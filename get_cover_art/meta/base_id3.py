@@ -1,11 +1,12 @@
 from .meta_audio import MetaAudio
 from mutagen.id3 import APIC
+from mutagen import FileType
 
 class MetaID3(MetaAudio):
-    def _get_tag(self, tag):
+    def _get_tag(self, tag: str) -> str:
         return self.audio.tags[tag].text[0] if tag in self.audio.tags else ""
     
-    def __init__(self, path, audio):
+    def __init__(self, path: str, audio: FileType):
         self.audio_path = path
         self.audio = audio
         # prefer Album Artist
@@ -15,13 +16,13 @@ class MetaID3(MetaAudio):
         if self.artist == "" or self.title == "":
             raise Exception("missing ID3 tags")
 
-    def has_embedded_art(self):
+    def has_embedded_art(self) -> bool:
         return self.audio.tags.getall("APIC") != []
 
     def detach_art(self):
         self.audio.tags.delall("APIC")
 
-    def embed_art(self, art_path):
+    def embed_art(self, art_path: str):
         # from https://stackoverflow.com/questions/409949/how-do-you-embed-album-art-into-an-mp3-using-python
         self.audio.tags.add(
             APIC(

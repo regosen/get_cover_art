@@ -7,19 +7,19 @@ from .cover_finder import CoverFinder, DEFAULTS
 # By default it will scan from the current working directory, you can override this
 # with commandline parameters or arguments passed into scan_folder()
 
-def check_art_size(value):
+def check_art_size(value: str) -> float:
     ivalue = int(value)
     if ivalue <= 0:
         raise argparse.ArgumentTypeError("art-size must be a positive integer")
     return ivalue
 
-def check_art_quality(value):
+def check_art_quality(value: str) -> float:
     ivalue = int(value)
     if ivalue < 0 or ivalue > 100:
         raise argparse.ArgumentTypeError("art-quality must be between 1 and 100")
     return ivalue
 
-def check_throttle(value):
+def check_throttle(value: str) -> float:
     fvalue = float(value)
     if fvalue < 0:
         raise argparse.ArgumentTypeError("throtte cannot be negative")

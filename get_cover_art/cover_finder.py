@@ -1,8 +1,9 @@
 import os, unicodedata, re
 from pathlib import Path
+from typing import Union
 
 from .apple_downloader import AppleDownloader
-from .meta import get_meta
+from .meta import get_meta, MetaAudio
 
 DEFAULTS = {
     "art_size": "500",
@@ -19,7 +20,7 @@ DEFAULTS = {
 
 # utility class to cache a set of values
 class ValueStore(object):
-    def __init__(self, cache_file):
+    def __init__(self, cache_file: str):
         self.filename = cache_file
         self.delim = "\n"
 
@@ -34,10 +35,10 @@ class ValueStore(object):
         self.keys = set([])
         self.filename = ''
 
-    def has(self, key):
+    def has(self, key: str) -> bool:
         return key in self.keys
     
-    def add(self, key):
+    def add(self, key: str):
         if not self.has(key):
             self.keys.add(key)
             self._update()
@@ -84,7 +85,7 @@ class CoverFinder(object):
         self.force = options.get('force')
         self.files_to_delete = set([])
 
-    def _should_skip(self, meta, art_path, verbose):
+    def _should_skip(self, meta: MetaAudio, art_path: str, verbose: bool) -> bool:
         if self.force:
             return False
         if self.ignore_artists.has(meta.artist):
@@ -102,7 +103,7 @@ class CoverFinder(object):
         return False
             
     # based on https://stackoverflow.com/questions/295135/turn-a-string-into-a-valid-filename
-    def _slugify(self, value, has_extension=True):
+    def _slugify(self, value: str, has_extension=True) -> str:
         """
         Normalizes string, removes non-alpha characters
 
@@ -119,14 +120,14 @@ class CoverFinder(object):
         value += ext
         return value
     
-    def _download(self, meta, art_path):
+    def _download(self, meta: MetaAudio, art_path: str) -> bool:
         if self.force or not os.path.exists(art_path):
             return self.downloader.download(meta, art_path)
         elif self.verbose:
             print(f"Skipping existing download for {art_path}")
         return True
     
-    def _find_folder_art(self, meta, folder):
+    def _find_folder_art(self, meta: MetaAudio, folder: str) -> Union[str, None]:
         for f in self.external_art_filename:
             filename = self._slugify(f.format(artist=meta.artist, album=meta.album, title=meta.title), has_extension=True)
             filename = os.path.join(folder, filename)
@@ -134,7 +135,7 @@ class CoverFinder(object):
                 return filename
         return None
 
-    def _cleanup(self, files):
+    def _cleanup(self, files: list[str]):
         if files:
             print(f"Cleaning up downloaded artwork")
             folders = set([os.path.dirname(file) for file in files])
@@ -147,7 +148,7 @@ class CoverFinder(object):
                     os.removedirs(folder)
                     if self.verbose: print(f"Deleted folder: {folder}")
 
-    def scan_file(self, path, allow_cleanup = True):
+    def scan_file(self, path: str, allow_cleanup = True):
         art_folder = self.art_folder_override or os.path.split(path)[0]
         try:
             meta = get_meta(path)

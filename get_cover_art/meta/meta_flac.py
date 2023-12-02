@@ -2,10 +2,10 @@ from .meta_audio import MetaAudio
 from mutagen.flac import Picture, FLAC
 
 class MetaFLAC(MetaAudio):
-    def _get_tag(self, tag):
+    def _get_tag(self, tag: str) -> str:
         return self.audio[tag][0] if tag in self.audio else ""
     
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.audio_path = path
         self.audio = FLAC(path)
         # prefer Album Artist
@@ -15,13 +15,13 @@ class MetaFLAC(MetaAudio):
         if self.artist == "" or self.title == "":
             raise Exception("missing FLAC tags")
     
-    def has_embedded_art(self):
+    def has_embedded_art(self) -> bool:
         return self.audio.pictures != []
 
     def detach_art(self):
         self.audio.clear_pictures()
 
-    def embed_art(self, art_path):
+    def embed_art(self, art_path: str):
         pic = Picture()
         with open(art_path, "rb") as f:
             pic.data = f.read()
