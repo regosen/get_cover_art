@@ -1,6 +1,7 @@
 import time
 from urllib.request import Request, urlopen, HTTPError
 from urllib.parse import urlparse, quote
+from typing import Tuple
 from .normalizer import ArtistNormalizer, AlbumNormalizer
 from .deromanizer import DeRomanizer
 from .meta import MetaAudio
@@ -72,7 +73,7 @@ class AppleDownloader(object):
                 pass
         return {}
 
-    def _get_data(self, meta: MetaAudio) -> tuple[str, str, dict, bool]:
+    def _get_data(self, meta: MetaAudio) -> Tuple[str, str, dict, bool]:
         artist = self.artist_normalizer.normalize(meta.artist)
         album = self.album_normalizer.normalize(meta.album)
         title = self.album_normalizer.normalize(meta.title)

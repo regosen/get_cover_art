@@ -1,6 +1,6 @@
 import os, unicodedata, re
 from pathlib import Path
-from typing import Union
+from typing import List, Union
 
 from .apple_downloader import AppleDownloader
 from .meta import get_meta, MetaAudio
@@ -135,7 +135,7 @@ class CoverFinder(object):
                 return filename
         return None
 
-    def _cleanup(self, files: list[str]):
+    def _cleanup(self, files: List[str]):
         if files:
             print(f"Cleaning up downloaded artwork")
             folders = set([os.path.dirname(file) for file in files])
