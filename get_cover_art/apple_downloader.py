@@ -1,3 +1,4 @@
+import json
 import time
 from urllib.request import Request, urlopen, HTTPError
 from urllib.parse import urlparse, quote
@@ -64,11 +65,10 @@ class AppleDownloader(object):
         elif artist in token:
             query_term = token
         url = QUERY_TEMPLATE % (quote(query_term), entity)
-        json = self._urlopen_text(url)
-        if json:
+        raw_json = self._urlopen_text(url)
+        if raw_json:
             try:
-                safe_json = json.replace('true', 'True').replace('false', 'False')
-                return eval(safe_json)
+                return json.loads(raw_json)
             except Exception:
                 pass
         return {}
