@@ -13,7 +13,7 @@ import setuptools
 
 setuptools.setup(
     name = 'get_cover_art',
-    version = '1.8.2',
+    version = '1.8.3',
     python_requires = '>=3.5',
     author = 'Rego Sen',
     author_email = 'regosen@gmail.com',
